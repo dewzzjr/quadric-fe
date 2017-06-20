@@ -3,6 +3,7 @@
 <script type="text/javascript" src="<?php echo base_url('assets/lte/bootstrap/js/bootstrap.min.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo base_url('assets/lte/plugins/slimScroll/jquery.slimscroll.min.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo base_url('assets/lte/plugins/datepicker/bootstrap-datepicker.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo base_url('assets/lte/plugins/datepicker/locales/bootstrap-datepicker.id.js'); ?>"></script>
 <script>
   var AdminLTEOptions = {
     //Sidebar push menu toggle button selector
@@ -16,7 +17,10 @@
 $(function () {
 //Date picker
 $('#datepicker').datepicker({
-  autoclose: true
+  format: 'dd/mm/yyyy',
+  language: 'id',
+  autoclose: false
 });
+  //'d MM yyyy'
 });
 </script>
