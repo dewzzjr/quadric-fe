@@ -76,7 +76,7 @@ $cdn = [
 ]
 ];
 ?>
-
+<base href="<?php echo base_url(); ?>">
 <?php
 echo meta($meta);
 echo '<title>' . $title . '</title>';

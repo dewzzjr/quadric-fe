@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<?php
-$this->load->view('header', $title);
-?>
+<?php $this->load->view('header', $title); ?>
 </head>
 <body class="skin-red sidebar-mini">
   <div class="wrapper">
@@ -29,8 +27,7 @@ $this->load->view('main/sidebar');
     <div class="row">
       <div class="col-md-12">
         <?php
-        $date['open'] = form_open('dashboard/fe');
-        $date['close'] = form_close();
+        $date['action'] = 'fe';
         echo $this->parser->parse('main/date', $date, true); ?>
       </div>
       <!-- /.col -->
@@ -62,9 +59,6 @@ $this->load->view('main/sidebar');
   <!-- /.content -->
 </div>
 </div>
-<?php
-$this->load->view('footer');
-?>
-
+<?php $this->load->view('footer'); ?>
 </body>
 </html>

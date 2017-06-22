@@ -6,7 +6,7 @@
     <!-- user panel (Optional) -->
     <div class="user-panel">
       <div class="pull-left image">
-        <img src="<?php echo base_url('assets/lte/dist/img/avatar5.png'); ?>" class="img-circle" alt="User Image">
+        <img src="assets/lte/dist/img/avatar5.png" class="img-circle" alt="User Image">
       </div>
       <div class="pull-left info">
         <p><?php echo $this->session->display; ?></p>
@@ -22,13 +22,13 @@
       <li class="treeview active">
         <a href="#" ><i class="fa fa-book"></i> <span>View Report</span> <i class="fa fa-angle-left pull-right"></i></a>
         <ul class="treeview-menu">
-          <li><a href="<?php echo site_url('dashboard/ps'); ?>"><i class="fa fa-circle-o"></i> Put in Service</a></li>
-          <li><a href="<?php echo site_url('dashboard/fe'); ?>"><i class="fa fa-circle-o"></i> Fullfillment Experiences</a></li>
+          <li><a href="dashboard/ps"><i class="fa fa-circle-o"></i> Put in Service</a></li>
+          <li><a href="dashboard/fe"><i class="fa fa-circle-o"></i> Fullfillment Experiences</a></li>
         </ul>
       </li>
       <?php if ( $this->session->usertype === 'admin' ) { ?>
-      <li><a href="<?php echo site_url('upload'); ?>"><i class="fa fa-upload"></i> <span>Upload Data</span></a></li>
-      <li><a href="<?php echo site_url('delete'); ?>"><i class="fa fa-trash"></i> <span>Delete Data</span></a></li>
+      <li><a href="upload"><i class="fa fa-upload"></i> <span>Upload Data</span></a></li>
+      <li><a href="delete"><i class="fa fa-trash"></i> <span>Delete Data</span></a></li>
       <?php } ?>
 
     </ul>

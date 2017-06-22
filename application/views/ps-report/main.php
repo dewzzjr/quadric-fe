@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<?php
-$this->load->view('header', $title);
-?>
+<?php $this->load->view('header', $title); ?>
 </head>
 <body class="skin-red sidebar-mini">
   <div class="wrapper">
@@ -28,8 +26,7 @@ $this->load->view('main/sidebar');
     <div class="row">
       <div class="col-md-12">
         <?php
-        $date['open'] = form_open('dashboard/ps');
-        $date['close'] = form_close();
+        $date['action'] = 'ps';
         echo $this->parser->parse('main/date', $date, true); ?>
       </div>
       <!-- /.col -->
@@ -38,14 +35,14 @@ $this->load->view('main/sidebar');
     <div class="row">
       <!-- harian -->
       <div class="col-md-6">
-        <!-- FE HARIAN -->
+        <!-- FE HARIAN < 3-->
         <?php
         $fe['title'] = '%PS < 3 hari Tgl 13 Juni 2017';
         echo $this->parser->parse('ps-report/table', $fe, true); ?>
       </div>
       <!-- /.col (left) -->
       <div class="col-md-6">
-        <!-- MTD-->
+        <!-- MTD < 3-->
         <?php
         $fe['title'] = '%PS < 3 Hari MTD 1-13 Juni 2017';
         echo $this->parser->parse('ps-report/table', $fe, true); ?>
@@ -56,14 +53,14 @@ $this->load->view('main/sidebar');
     <div class="row">
       <!-- harian -->
       <div class="col-md-6">
-        <!-- FE HARIAN -->
+        <!-- FE HARIAN < 2-->
         <?php
         $fe['title'] = '%PS < 2 hari Tgl 13 Juni 2017';
         echo $this->parser->parse('ps-report/table', $fe, true); ?>
       </div>
       <!-- /.col (left) -->
       <div class="col-md-6">
-        <!-- MTD-->
+        <!-- MTD < 2-->
         <?php
         $fe['title'] = '%PS < 2 Hari MTD 1-13 Juni 2017';
         echo $this->parser->parse('ps-report/table', $fe, true); ?>
@@ -75,9 +72,6 @@ $this->load->view('main/sidebar');
   <!-- /.content -->
 </div>
 </div>
-<?php
-$this->load->view('footer');
-?>
-
+<?php $this->load->view('footer'); ?>
 </body>
 </html>

@@ -13,14 +13,14 @@
           <th class="text-center">NAS</th>
         </tr>
         <tr>
-          <td class="text-center"><b>PS < 3 HARI</b></td>
+          <th class="text-center">PS < 3 HARI</th>
           <?php for ($i=0; $i < 8; $i++) { ?>
             <td class="text-center"><span class="badge bg-red">60,00%</span></td>
           <?php } ?>
           <td rowspan="2" class="text-center"><span class="badge bg-yellow">80,00%</span></td>
         </tr>
         <tr>
-          <td class="text-center"><b>RANK</b></td>
+          <th class="text-center">RANK</th>
           <?php for ($i=0; $i < 8; $i++) { ?>
             <td class="text-center"><?php echo $i ?></td>
           <?php } ?>

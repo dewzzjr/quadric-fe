@@ -2,9 +2,9 @@
 <header class="main-header">
 
   <!-- Logo -->
-  <a href="<?php echo site_url(); ?>" class="logo">
+  <a href="#" class="logo">
     <!-- mini logo for sidebar mini 50x50 pixels -->
-    <span class="logo-mini"><img src="<?php echo base_url('assets/images/icon.ico'); ?>" class="logo-mini" height="50" width="50"></span>
+    <span class="logo-mini"><img src="assets/images/icon.ico" class="logo-mini" height="50" width="50"></span>
 
     <!--   <span class="logo-mini"></span> logo for regular state and mobile devices -->
     <span class="logo-lg">Dashboard<b>Fulfillment Experience</b></span>
@@ -25,14 +25,14 @@
           <!-- Menu Toggle Button -->
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <!-- The user image in the navbar-->
-            <img src="<?php echo base_url('assets/lte/dist/img/avatar5.png'); ?>" class="user-image" alt="User Image">
+            <img src="assets/lte/dist/img/avatar5.png" class="user-image" alt="User Image">
             <!-- hidden-xs hides the username on small devices so only the image appears. -->
             <span class="hidden-xs"><?php echo $this->session->display; ?></span>
           </a>
           <ul class="dropdown-menu">
             <!-- The user image in the menu -->
             <li class="user-header">
-              <img src="<?php echo base_url('assets/lte/dist/img/avatar5.png'); ?>" class="img-circle" alt="User Image">
+              <img src="assets/lte/dist/img/avatar5.png" class="img-circle" alt="User Image">
 
               <p>
                 <?php echo $this->session->display; ?>
@@ -45,15 +45,15 @@
                 <a href="#" class="btn btn-default btn-flat">Profile</a>
               </div>
               <div class="pull-right">
-                <a href="<?php echo site_url('signout'); ?>" class="btn btn-default btn-flat">Sign out</a>
+                <a href="signout" class="btn btn-default btn-flat">Sign out</a>
               </div>
             </li>
           </ul>
         </li>
-        <!-- Control Sidebar Toggle Button -->
+        <!-- Control Sidebar Toggle Button --
         <li>
           <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-        </li>
+        </li-->
       </ul>
     </div>
   </nav>
