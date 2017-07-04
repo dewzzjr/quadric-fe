@@ -43,8 +43,6 @@ class Admin extends CI_Controller {
    	$this->upload->initialize($config);
    	$this->upload->data();
 
-   	$this->load->library('upload', $config);
-
     if ( ! $this->upload->do_upload('data') ){
       $this->session->set_flashdata('error', $this->upload->display_errors());
       redirect('upload');
@@ -52,7 +50,11 @@ class Admin extends CI_Controller {
       $data = array('upload_data' => $this->upload->data());
       $result = $this->data_model->importData($data['upload_data']['full_path']);
   		unlink('./assets/' . $data['upload_data']['file_name']);
-      $this->session->set_flashdata('success', '<br>' . $result['rows'] . ' data telah ditambah');
+      if ($result['success']) {
+        $this->session->set_flashdata('success', '<br>' . $result['rows'] . ' data telah ditambah');
+      } else {
+        $this->session->set_flashdata('error', '<br>File yang diupload tidak sesuai!');
+      }
       redirect('upload');
     }
   }
