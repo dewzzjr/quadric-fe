@@ -22,17 +22,24 @@ $this->load->view('main/sidebar');
   </section>
   <!-- Main content -->
   <section class="content">
-    <?php //$this->load->view('upload/upload'); ?>
-    <form action="admin/upload_file" method="post" enctype="multipart/form-data" id="upload_form">
-        <input id="fileupload" name="data" type="file" />
-        <input name="submit" type="submit" value="Upload"/>
-    </form>
-    <?php if ($this->session->flashdata('success')) { ?>
-    <div class="alert alert-success alert-dismissible">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-      <h4><i class="icon fa fa-check"></i> Success!</h4>
-      <?php echo $this->session->flashdata('success'); ?>
+    <div class="row">
+      <form action="admin/upload_file" method="post" enctype="multipart/form-data" id="upload_form">
+        <div class="col-sm-12">
+          <div class="btn-group">
+            <input name="submit" type="submit" value="Upload" class="btn btn-danger"/>
+            <input id="fileupload" name="data" type="file" class="filestyle"/>
+          </div>
+        </div>
+      </form>
     </div>
+    <div class="row">
+      <div class="col-sm-12">
+    <?php if ($this->session->flashdata('success')) { ?>
+      <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-check"></i> Success!</h4>
+        <?php echo $this->session->flashdata('success'); ?>
+      </div>
     <?php } elseif ($this->session->flashdata('error')) { ?>
       <div class="alert alert-danger alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -40,6 +47,8 @@ $this->load->view('main/sidebar');
         <?php echo $this->session->flashdata('error'); ?>
       </div>
     <?php }?>
+      </div>
+    </div>
   </section>
   <!-- /.content -->
 </div>
@@ -48,11 +57,10 @@ $this->load->view('main/sidebar');
 $this->load->view('footer');
 ?>
 <script>
-$("#fileupload").change(function () {
-    var fileExtension = ['csv', 'txt'];
-    if ($.inArray($(this).val().lastIndexOf('.').pop().toLowerCase(), fileExtension) == -1) {
-        alert("Only formats are allowed : "+fileExtension.join(', '));
-    }
+$(":file").filestyle({
+  buttonName: "btn btn-danger btn-flat",
+  buttonBefore: "true",
+  placeholder: "Pilih file .csv"
 });
 </script>
 
