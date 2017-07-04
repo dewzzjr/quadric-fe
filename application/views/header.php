@@ -71,6 +71,10 @@ $cdn = [
     'rel'   => 'stylesheet'
 ],
 [
+    'href'  => 'https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css',
+    'rel'   => 'stylesheet'
+],
+[
     'href'  => 'https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css',
     'rel'   => 'stylesheet'
 ]

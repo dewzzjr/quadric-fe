@@ -21,9 +21,12 @@
 		}
 
 		function listTanggal(){
-			$this->db->distinct();
-			$this->db->select('SC_TGLPS');
-			$listTanggal = $this->db->get('reg_data');
+			$listTanggal = $this->db->select('DATE(SC_TGLPS) TGL_PS, COUNT(SC_TGLPS) CNT_PS')
+									->from('reg_data')
+									->group_by('SC_TGLPS')
+									->get();
+									
+			return $listTanggal->result();
 		}
 
 		function deleteData($tanggal){

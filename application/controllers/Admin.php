@@ -24,6 +24,7 @@ class Admin extends CI_Controller {
 
   public function delete() {
     $data['title'] = "Delete";
+    $this->load->model('Model_FE');
     $this->load->view('delete/main', $data);
   }
 

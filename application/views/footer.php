@@ -6,6 +6,8 @@
 <script type="text/javascript" src="assets/lte/plugins/datepicker/locales/bootstrap-datepicker.id.js"></script>
 <script type="text/javascript" src="assets/lte/plugins/fastclick/fastclick.js"></script>
 <script type="text/javascript" src="assets/lte/plugins/iCheck/icheck.min.js"></script>
+<script type="text/javascript" src="assets/lte/plugins/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="assets/lte/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
   var AdminLTEOptions = {
     //Sidebar push menu toggle button selector
@@ -24,5 +26,10 @@ $('#datepicker').datepicker({
   autoclose: false
 });
   //'d MM yyyy'
+});
+</script>
+<script >
+$(document).ready(function(){
+    $('#dataTables').DataTable();
 });
 </script>

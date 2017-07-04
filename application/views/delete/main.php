@@ -28,7 +28,9 @@ $this->load->view('main/sidebar');
         <!-- FE HARIAN < 3-->
         <?php
         $fe['title'] = 'Data Harian';
-        echo $this->parser->parse('delete/table', $fe, true); ?>
+        $this->load->model('Model_FE');
+        $data['listTanggal'] = $this->Model_FE->listTanggal();
+        echo $this->parser->parse('delete/table', $data, $fe, true); ?>
       </div>
       <!-- /.col (left) -->
     </div>
