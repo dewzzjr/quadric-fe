@@ -25,7 +25,12 @@ class Admin extends CI_Controller {
   public function delete() {
     $data['title'] = "Delete";
     $this->load->model('Model_FE');
+    $data['daftar']['tanggal'] = $this->Model_FE->listTanggal();
     $this->load->view('delete/main', $data);
+  }
+
+  public function remove($tanggal = NULL) {
+
   }
 
   public function upload() {

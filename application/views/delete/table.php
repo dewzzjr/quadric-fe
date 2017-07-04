@@ -1,49 +1,59 @@
 <div class="box box-danger">
+  <div class="box-header">
+    <!-- Upload data -->
+    <div class="row">
+      <form action="admin/upload_file" method="post" enctype="multipart/form-data" id="upload_form">
+        <div class="col-sm-12">
+          <div class="btn-group">
+            <input name="submit" type="submit" value="Upload" class="btn btn-danger"/>
+            <input id="fileupload" name="data" type="file" class="filestyle"/>
+          </div>
+          <!-- /.btn-group -->
+        </div>
+        <!-- /.col -->
+      </form>
+    </div>
+    <!-- /.row -->
+  </div>
   <!-- /.box-header -->
-  <div class="box-body no-padding">
+  <div class="box-body">
     <div class="table-responsive">
-      <br>
-      <div class="col-sm-12">
-      <table class="table table-bordered table-hover dataTable" role="grid" id="dataTables">
+      <table id="dataTables" class="table table-bordered table-hover" >
         <thead>
           <tr>
-            <th class="text-center">Tanggal</th>
-            <th class="text-center">Jumlah</th>
-            <th class="text-center">Option</th>
+            <th>Tanggal</th>
+            <th>Jumlah</th>
+            <th>Option</th>
           </tr>
         </thead>
-        <tbody>
-          <?php
-          $this->load->model('Model_FE');
-          $data['listTanggal'] = $this->Model_FE->listTanggal();
-
-          foreach ($listTanggal as $row) { ?>
+        <tfoot>
           <tr>
-            <td><?php echo $row->TGL_PS; ?></td>
-            <td class="text-right"><?php echo $row->CNT_PS; ?></td>
-            <td class="text-center"><button type="button" class="btn btn-default btn-danger btn-sm" id="btn-delete" value="<?php $row->TGL_PS; ?>"><i class="fa fa-trash-o"></i> Delete</button></td>
+            <th>Tanggal</th>
+            <th>Jumlah</th>
+            <th>Option</th>
           </tr>
-          <?php }
-          ?>
+        </tfoot>
+        <tbody>
+          {tanggal}
+          <tr>
+            <td>{TGL_PS}</td>
+            <td class="text-right">{CNT_PS}</td>
+            <td class="text-center">
+              <button type="button" class="btn btn-default btn-danger btn-sm"
+              data-toggle="modal"
+              data-target="#delete"
+              data-tanggal="{TGL_PS}"
+              data-count="{CNT_PS}">
+                <i class="fa fa-trash-o"></i> Delete
+              </button>
+            </td>
+          </tr>
+          {/tanggal}
         </tbody>
       </table>
-      </div>
     </div>
     <!-- /.table -->
   </div>
   <!-- /.box-body -->
 </div>
 <!-- /.box -->
-<script >
-  $('.btn').click(function() {
-    var TGL_PS = document.getElementById("btn-delete").value;
-
-    $.ajax({
-      type: "POST",
-      url: "some.php",
-      data: "tanggal=" + TGL_PS
-    }).done(function( msg ) {
-      alert( "Data Saved: " + msg );
-    });
-  });
-</script>

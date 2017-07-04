@@ -56,13 +56,6 @@ $this->load->view('main/sidebar');
 <?php
 $this->load->view('footer');
 ?>
-<script>
-$(":file").filestyle({
-  buttonName: "btn btn-danger btn-flat",
-  buttonBefore: "true",
-  placeholder: "Pilih file .csv"
-});
-</script>
 
 </body>
 </html>

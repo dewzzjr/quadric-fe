@@ -20,17 +20,19 @@
 <script type="text/javascript" src="assets/lte/dist/js/app.min.js"></script>
 <script>
 $(function () {
-//Date picker
-$('#datepicker').datepicker({
-  format: 'dd/mm/yyyy',
-  language: 'id',
-  autoclose: false
+  //Date Picker
+  $('#datepicker').datepicker({
+    format: 'dd/mm/yyyy',
+    language: 'id',
+    autoclose: false
+  });
+  //Data Table
+  $('#dataTables').DataTable();
 });
-  //'d MM yyyy'
-});
-</script>
-<script >
-$(document).ready(function(){
-    $('#dataTables').DataTable();
+//Upload button
+$(":file").filestyle({
+  buttonName: "btn btn-danger btn-flat",
+  buttonBefore: "true",
+  placeholder: "Pilih file .csv"
 });
 </script>
