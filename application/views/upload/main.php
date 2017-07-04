@@ -24,13 +24,16 @@ $this->load->view('main/sidebar');
   <section class="content">
     <div class="row">
       <form action="admin/upload_file" method="post" enctype="multipart/form-data" id="upload_form">
-          <div class="col-sm-12">
-            <input name="submit" type="submit" value="Upload" />
-            <input id="fileupload" name="data" type="file" />
+        <div class="col-sm-12">
+          <div class="btn-group">
+            <input name="submit" type="submit" value="Upload" class="btn btn-danger"/>
+            <input id="fileupload" name="data" type="file" class="filestyle"/>
           </div>
+        </div>
       </form>
     </div>
     <div class="row">
+      <div class="col-sm-12">
     <?php if ($this->session->flashdata('success')) { ?>
       <div class="alert alert-success alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -44,6 +47,7 @@ $this->load->view('main/sidebar');
         <?php echo $this->session->flashdata('error'); ?>
       </div>
     <?php }?>
+      </div>
     </div>
   </section>
   <!-- /.content -->
@@ -53,11 +57,10 @@ $this->load->view('main/sidebar');
 $this->load->view('footer');
 ?>
 <script>
-$("#fileupload").change(function () {
-    var fileExtension = ['csv', 'txt'];
-    if ($.inArray($(this).val().lastIndexOf('.').pop().toLowerCase(), fileExtension) == -1) {
-        alert("Only formats are allowed : "+fileExtension.join(', '));
-    }
+$(":file").filestyle({
+  buttonName: "btn btn-danger btn-flat",
+  buttonBefore: "true",
+  placeholder: "Pilih file .csv"
 });
 </script>
 
