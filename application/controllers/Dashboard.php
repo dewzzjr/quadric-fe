@@ -2,7 +2,6 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends CI_Controller {
-
 	function __construct(){
 			parent::__construct();
 			//setlocale(LC_ALL, 'id_ID') or die('Locale not installed');
@@ -10,6 +9,7 @@ class Dashboard extends CI_Controller {
       if ( !$this->session->has_userdata('username') ) {
           redirect('login');
       }
+			$this->load->model('data_model');
     }
 
     public function index() {
@@ -17,6 +17,9 @@ class Dashboard extends CI_Controller {
     }
 
 		public function ps($date = NULL, $month = NULL, $year = NULL) {
+			/**
+			 * Check if there is parameter else go to today date
+			 */
 			if ( $this->input->server('REQUEST_METHOD') == 'POST' ) {
 				$tgl = $this->input->post('date');
 				//echo '<pre>';var_dump($tgl);die();
@@ -26,14 +29,22 @@ class Dashboard extends CI_Controller {
 				$date = date('d');
 				$month = date('m');
 				$year = date('Y');
+				$tgl = date('Y-m-d');
 				//echo '<pre>';var_dump($date);die();
 			} elseif ( $year === NULL ) {
 				redirect('dashboard/ps/');
+			} else {
+				$tgl = $year . "-" . $month . "-" . $date;
 			}
-			$data['title'] = "Dashboard";
+			/**
+			 * Set input for view
+			 */
+			$data['title'] = "Dashboard PS";
 			$data['tanggal'] = date_create($year . "-" . $month . "-" . $date);
-
-			//echo '<pre>';var_dump($data);die();
+			// $data['DTD'] = $this->data_model->getDTD($tgl);
+			// $data['YTD'] = $this->data_model->getYTD($year);
+			// $data['MTD'] = $this->data_model->getMTD($month, $year);
+			//echo '<pre>';var_dump($data['DTD']);die();
 			$this->load->view('ps-report/main', $data);
 		}
 
@@ -47,11 +58,18 @@ class Dashboard extends CI_Controller {
 				$date = date('d');
 				$month = date('m');
 				$year = date('Y');
-				//echo '<pre>';var_dump($date);die();
+				$tgl = date('Y-m-d');
+				//echo '<pre>';var_dump($tgl);die();
 			} elseif ( $year === NULL ) {
-				redirect('dashboard/ps/');
+				redirect('dashboard/fe/');
+			} else {
+				$tgl = $year . "-" . $month . "-" . $date;
 			}
-			$data['title'] = "Dashboard2";
+			$data['title'] = "Dashboard FE";
+			$data['tanggal'] = date_create($year . "-" . $month . "-" . $date);
+			// $data['DTD'] = $this->data_model->getDTD($tgl);
+			// $data['YTD'] = $this->data_model->getYTD($year);
+			// $data['MTD'] = $this->data_model->getMTD($month, $year);
 			$this->load->view('fe-report/main', $data);
 		}
 

@@ -1,6 +1,6 @@
 <div class="box box-solid box-danger">
   <div class="box-header">
-    <h3 class="box-title">MTD Juni</h3>
+    <h3 class="box-title">MTD <span class="bulan"></span> <span class="tahun"></span></h3>
   </div>
   <div class="box-body table-responsive no-padding">
     <table class="table table-condensed table-striped">
@@ -34,13 +34,16 @@
         </tbody>
         <tfoot>
           <tr>
-            <th class="text-center">13 Juni</th>
+            <th class="text-center"><span class="tanggal"></span> <span class="bulan"></span></th>
             <th class="text-center"><span class="badge bg-yellow">80,00%</span></th>
           </tr>
         </tfoot>
     </table>
   </div>
   <!-- /.box-body -->
+  <div class="overlay" id="load-mtd">
+    <i class="fa fa-refresh fa-spin"></i>
+  </div>
 </div>
 <!-- /.box -->
 <div class="box box-solid box-danger">
@@ -48,7 +51,7 @@
   <div class="box-body table-responsive no-padding">
     <table class="table table-condensed table-striped">
         <tr>
-          <th class="text-center" style="width: 70px">TGL</th>
+          <th class="text-center" style="width: 70px">{rincian}</th>
           <th class="text-center">%</th>
         </tr>
         <?php for ($i=1; $i < 13; $i++) { ?>
