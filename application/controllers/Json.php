@@ -55,4 +55,12 @@ class Json extends CI_Controller {
 			$tgl = $year . "-" . $month . "-" . $date;
 			echo $this->data_model->getDataTotalPerHari($tgl1,$tgl);
 		}
+
+		public function rytd($month = NULL, $year = NULL) {
+			if ( $year === NULL OR $month === NULL) {
+				$year = date('Y');
+				$month = date('m');
+			}
+			echo $this->data_model->getDataTotalPerBulan($month,$year);
+		}
 }

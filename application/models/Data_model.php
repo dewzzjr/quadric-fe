@@ -200,4 +200,18 @@ class Data_model extends CI_Model {
 			//echo '<pre>';var_dump(array('data' => $DTD, 'total' => $DTD_total));die();
 		}
 
+    public function getDataTotalPerBulan($bulan, $tahun){
+      $this->db->cache_on();
+			$cond = array('MONTH(SC_TGLPS) <=' => $bulan, 'YEAR(SC_TGLPS) =' => $tahun);// "BETWEEN " . $tanggal1 . " AND " . $tanggal);
+      $data = $this->db->select('MONTH(SC_TGLPS) AS BLN, AVG( SLG="COMPLY") TOTAL')
+                ->from('reg_data')
+                ->where($cond)
+								->group_by('MONTH(SC_TGLPS)' )
+                ->get()
+                ->result_array();
+      $this->db->cache_off();
+      $result = array('data' => $data);
+      return json_encode($result);
+			// echo '<pre>';var_dump($result);die();
+		}
 }

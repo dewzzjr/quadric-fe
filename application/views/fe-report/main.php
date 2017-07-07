@@ -75,14 +75,14 @@ $this->load->view('main/sidebar');
         $data['total'] = 'TR4';
         $data['rincian'] = 'BLN';
         $data['identifiers'] = [];
-        $listTanggal = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $listTanggal = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember'];
         for ($i=0; $i < $tanggal->format('m'); $i++) {
           $index = $i;
           array_push($data['identifiers'],
           [
             'identifier' => substr($listTanggal[$index],0,3),
             'tag' => '',
-            'data' => 'dtd-total-'
+            'data' => 'rincian-bln-'
           ]);
         }
         echo $this->parser->parse('fe-report/template-td', $data, true); ?>
@@ -113,6 +113,7 @@ var monthNames = [
   "Agustus", "September", "Oktober",
   "November", "Desember"
 ];
+
 function formatDate(dates) {
   var day = dates.getDate();
   var monthIndex = dates.getMonth();
@@ -125,37 +126,26 @@ function getMonth(index) {
 }
 
 function getMin(arr, prop) {
-  var min = 0.0;
+  if (prop == 'TOTAL') {
+    console.log(arr);
+  }
+  var min = 999;
   var index = 0
   for (var i = 0 ; i < arr.length ; i++) {
     var item = arr[i][prop];
     if (parseFloat(item) < min) {
+      if (prop == 'TOTAL') {
+        console.log(min + " > " + item);
+      }
       index = i;
-      min = parseFloat(item)
+      min = parseFloat(item);
     }
   }
   return index;
 }
 
-function getMinKeyx(arr){
-  //console.log(arr);
-  var min = 0.0;
-  var minKey = "";
-  for (var key in arr) {
-    //console.log(key);
-    if (!arr.hasOwnProperty(key)) continue;
-    var item = arr[key];
-    //console.log(item);
-    if (parseFloat(item) < min) {
-      minKey = key;
-      min = parseFloat(item);
-    }
-  }
-  return minKey;
-}
-
-function getMinKey(o){
-  delete o['TGL'];
+function getMinKey(o, prop){
+  delete o[prop];
     var vals = [];
     for(var i in o){
        vals.push(o[i]);
@@ -168,11 +158,7 @@ function getMinKey(o){
         }
     }
 }
-function getMinKeyA(obj){
-var min = Object.keys(obj).reduce(function(a, b){ return parseFloat(obj[a]) > parseFloat(obj[b]) ? a : b });
-console.log(min);
-return min;
-}
+
 function selectColor(value, minIndex, index) {
   var color;
   if ( value > 0.9) {
@@ -188,44 +174,63 @@ function selectColor(value, minIndex, index) {
 
 function getData(prop, input = ""){
   $.getJSON( "json/"+ prop +"/"+ input, function( data ) {
-    var items = [];
-    var name = "AVG";
-    var minIndex = getMin(data.data, name);
 
-    for (var i = 0; i < data.data.length; i++) {
-      var item = data.data[i];
-      var value = Math.floor( parseFloat(item[name]) * 10000) / 100 ;
-      var color = selectColor( parseFloat(item[name]), minIndex, i )
-      $('#' + prop + '-' + item["WITEL"].toLowerCase()).append('<span class="badge bg-' + color + '">' + value + '%</span>')
-    }
-    var value = Math.floor( parseFloat(data.total) * 10000) / 100 ;
-    $('#' + prop + '-total').append('<span class="badge bg-' + color + '">' + value + '%</span>')
-    $('#load-'+ prop).hide();
+      if (prop == 'rytd') {
+        console.log(data);
+        var name = 'TOTAL';
+      } else {
+        var name = "AVG";
+      }
+
+      var minIndex = getMin(data.data, name);
+
+      for (var i = 0; i < data.data.length; i++) {
+        var item = data.data[i];
+        var value = (parseFloat(item[name])*100).toFixed(2);//Math.floor( parseFloat(item[name]) * 10000) / 100 ;
+        var color = selectColor( parseFloat(item[name]), minIndex, i );
+
+        if (prop == 'rytd') {
+          var bulan = monthNames[parseInt(item['BLN'])-1].substr(0,3).toLowerCase();
+          $('#rincian-bln-' + bulan).append('<span class="badge bg-' + color + '">' + value + '%</span>')
+        }else {
+          $('#' + prop + '-' + item["WITEL"].toLowerCase()).append('<span class="badge bg-' + color + '">' + value + '%</span>')
+        }
+      }
+
+      if (prop == 'rytd') {
+        $('#load-BLN').hide();
+      } else {
+        var value =  (parseFloat(data.total)*100).toFixed(2);//Math.floor( parseFloat() * 10000) / 100 ;
+        $('#' + prop + '-total').append('<span class="badge bg-' + color + '">' + value + '%</span>')
+        $('#load-'+ prop).hide();
+      }
   });
 }
 
 function getDataDTD(date, month, year){
     $.getJSON( "json/dtd/"+ date +"/"+ month +"/"+ year, function( data ) {
-
+      var minTotal = getMin(data.data, 'TOTAL');
+      console.log(minTotal);
       for (var i = 0; i < data.data.length; i++) {
-        var minIndex = getMinKey(data.data[i]);
+        var minIndex = getMinKey(data.data[i], 'TGL');
         var item = data.data[i];
         for (var key in item) {
           if (key === 'length' || !item.hasOwnProperty(key)) continue;
-          var value = Math.floor( parseFloat(item[key]) * 10000) / 100 ;
+          var value = (parseFloat(item[key])*100).toFixed(2);//Math.floor( parseFloat(item[key]) * 10000) / 100 ;
           var color = selectColor( parseFloat(item[key]), minIndex, key );
           $('#dtd-' + key.toLowerCase() + '-' + (i+1)).append('<span class="badge bg-' + color + '">' + value + '%</span>');
           if (key == 'TOTAL') {
+            var color = selectColor( parseFloat(item[key]), minTotal, i );
             $('#rincian-tgl-' + (i+1)).append('<span class="badge bg-' + color + '">' + value + '%</span>');
           }
           //console.log('#dtd-' + key.toLowerCase() + '-' + (i+1));
         }
       }
 
-      var minIndex = getMinKey(data.total);
+      var minIndex = getMinKey(data.total, 'TGL');
       for (var key in data.total) {
         if (key === 'length' || !data.total.hasOwnProperty(key)) continue;
-        var value = Math.floor( parseFloat(data.total[key]) * 10000) / 100 ;
+        var value = (parseFloat(data.total[key])*100).toFixed(2);//Math.floor( parseFloat(data.total[key]) * 10000) / 100 ;
         var color = selectColor( parseFloat(data.total[key]), minIndex, key );
         $('#dtd-' + key.toLowerCase()).append('<span class="badge bg-' + color + '">' + value + '%</span>');
       }
@@ -239,9 +244,10 @@ $(".bulan").text(getMonth(month));
 $(".tahun").text(year);
 $(".tanggal").text(date);
 
+getDataDTD(date, month, year);
 getData('mtd', month + "/" + year);
 getData('ytd', year);
-getDataDTD(date, month, year);
+getData('rytd', month + "/" + year);
 </script>
 </body>
 </html>
