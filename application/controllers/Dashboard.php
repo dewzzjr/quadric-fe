@@ -41,11 +41,6 @@ class Dashboard extends CI_Controller {
 			 */
 			$data['title'] = "Dashboard PS";
 			$data['tanggal'] = date_create($year . "-" . $month . "-" . $date);
-			// $data['DTD'] = $this->data_model->getDTD($tgl);
-			// $data['YTD'] = $this->data_model->getYTD($year);
-			// $data['MTD'] = $this->data_model->getMTD($month, $year);
-			//echo '<pre>';var_dump($data['DTD']);die();
-			// $this->data_model->getDataPS3PerHari($year . "-" . $month . "-" . $date);
 			$this->load->view('ps-report/main', $data);
 		}
 
@@ -68,9 +63,6 @@ class Dashboard extends CI_Controller {
 			}
 			$data['title'] = "Dashboard FE";
 			$data['tanggal'] = date_create($year . "-" . $month . "-" . $date);
-			// $data['DTD'] = $this->data_model->getDTD($tgl);
-			// $data['YTD'] = $this->data_model->getYTD($year);
-			// $data['MTD'] = $this->data_model->getMTD($month, $year);
 			$this->load->view('fe-report/main', $data);
 		}
 

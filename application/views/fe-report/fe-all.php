@@ -1,7 +1,6 @@
-
 <div class="box box-solid box-danger">
   <div class="box-header">
-    <h3 class="box-title">Fulfillment Experiences YTD s.d <span class="full-date"></span></h3>
+    <h3 class="box-title"><?php echo $title; ?><span class="full-date"></span></h3>
   </div>
   <div class="box-body table-responsive">
     <table class="table table-bordered table-striped">

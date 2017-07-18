@@ -94,11 +94,15 @@ $this->load->view('main/sidebar');
 
       <div class="col-md-6">
         <!-- FE MTD -->
-        <?php $this->load->view('fe-report/fe-mtd'); ?>
+        <?php
+        $data['title'] = 'Fulfillment Experiences MTD 1-';
+        $this->load->view('fe-report/fe-all', $data); ?>
       </div>
       <div class="col-md-6">
         <!-- FE YTD -->
-        <?php $this->load->view('fe-report/fe-ytd'); ?>
+        <?php
+        $data['title'] = 'Fulfillment Experiences YTD s.d ';
+        $this->load->view('fe-report/fe-all', $data); ?>
       </div>
     </div>
   </section>

@@ -7,10 +7,9 @@ class Data_model extends CI_Model {
         $this->load->database();
     }
 
-    function input($data){
-      $n_password = md5($password);
-      $this->db->insert('reg_data');
-    }
+    /**
+    * Admin function
+    */
 
     function importData($file){
       $file = str_replace("\\","/",$file);
@@ -61,42 +60,22 @@ class Data_model extends CI_Model {
       return $res;
     }
 
-    function getYTD($tahun){
-      $this->db->cache_on();
-			$cond = array('YEAR(SC_TGLPS)' => $tahun);
+    function listTanggal(){
+      $listTanggal = $this->db->select('DATE(SC_TGLPS) TGL_PS, COUNT(SC_TGLPS) CNT_PS')
+                  ->from('reg_data')
+                  ->group_by('SC_TGLPS')
+                  ->get();
 
-			$YTD = $this->db->select('WITEL, AVG(SLG="COMPLY") AVG_YTD')
-								->from('reg_data')
-								->where($cond)
-								->group_by('WITEL')
-								->get()
-								->result_array();
+      return $listTanggal->result();
+    }
 
-
-			$YTD_total = $this->db->select('AVG(SLG="COMPLY") AVG_YTD_total')
-								->from('reg_data')
-								->where($cond)
-								->get()
-								->row()->AVG_YTD_total;
-
-      //combine
-      if (isset($YTD[7])) {
-        $YTD[0]['AVG_YTD'] = $this->db->select('AVG(SLG="COMPLY") AVG_YTD_YKT')
-  								->from('reg_data')
-  								->where($cond)
-  								->like('WITEL','YOGYAKARTA')
-  								->get()
-  								->row()->AVG_YTD_YKT;
-
-        $YTD[0]['WITEL'] = $YTD[7]['WITEL'];
-        array_splice($YTD, 7, 1);
-      }
-      $this->db->cache_off();
-      $result = array('data' => $YTD, 'total' => $YTD_total);
-			return json_encode($result);
-			//echo '<pre>';var_dump($YTD_YKT->result());
-		}
-
+    /**
+    * PS function
+    * getData (JSON->ytd; JSON->mtd; )
+    * getDataHari (JSON->dtd; )
+    * getDataTotalPerHari (JSON->rmtd; )
+    * getDataTotalPerBulan (JSON->rytd; )
+    */
 
 		function getData($tahun, $bulan = NULL){
       $this->db->cache_on();
@@ -180,9 +159,10 @@ class Data_model extends CI_Model {
 			//echo '<pre>';var_dump(array('data' => $DTD, 'total' => $DTD_total));die();
 		}
 
+
     public function getDataTotalPerHari($tanggal1, $tanggal){
       $this->db->cache_on();
-			$cond = array('SC_TGLPS <=' => $tanggal, 'SC_TGLPS >=' => $tanggal1);// "BETWEEN " . $tanggal1 . " AND " . $tanggal);
+			$cond = array('SC_TGLPS <=' => $tanggal, 'SC_TGLPS >=' => $tanggal1);
       $data = $this->db->select('SC_TGLPS AS TGL, AVG( SLG="COMPLY") TOTAL')
                 ->from('reg_data')
                 ->where($cond)
@@ -215,6 +195,13 @@ class Data_model extends CI_Model {
 			// echo '<pre>';var_dump($result);die();
 		}
 
+    /**
+    * FE function
+    * getDataPS3PerHari (JSON->psd3; )
+    * getDataPS3PerBulan (JSON->psm3; )
+    * getDataPS2PerHari (JSON->psd2; )
+    * getDataPS2PerBulan (JSON->psm2; )
+    */
     public function getDataPS3PerHari($tanggal){
       $date = date_create($tanggal);
       date_sub($date,date_interval_create_from_date_string("1 day"));

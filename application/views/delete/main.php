@@ -16,7 +16,7 @@ $this->load->view('main/sidebar');
       Delete Data
     </h1>
     <ol class="breadcrumb">
-      <li><a href="#"><i class="fa fa-dashboard"></i> Admin</a></li>
+      <li><a href="admin"><i class="fa fa-dashboard"></i> Admin</a></li>
       <li class="active">Delete Data</li>
     </ol>
   </section>

@@ -19,14 +19,11 @@ class Login extends CI_Controller {
     $this->form_validation->set_rules('username', 'username', 'required|trim|xss_clean');
     $this->form_validation->set_rules('password', 'password', 'required|trim|xss_clean');
     if ($this->form_validation->run() == FALSE) {
-      // echo '<pre>';var_dump(validation_errors());die();
       $this->session->set_flashdata('error', validation_errors());
       redirect('login');
     } else {
       $usr = $this->input->post('username');
       $psw = $this->input->post('password');
-      //$u = mysql_real_escape_string($usr);
-      //$p = md5(mysql_real_escape_string($psw));
       $cek = $this->user_model->cek_user($usr, $psw);
       if ($cek['status']) {
         //login berhasil, buat session
