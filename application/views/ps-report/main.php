@@ -55,7 +55,7 @@ $this->load->view('main/sidebar');
       <div class="col-md-6">
         <!-- FE HARIAN < 3-->
         <?php
-        $fe['title'] = '%PS < 3 hari Tgl <span class="full-date"></span>';
+        $fe['title'] = 'Fulfillment Experiences (%PS < 3 hari) Tgl <span class="full-date"></span>';
         $fe['short'] = '%PS < 3 hari';
         $fe['prop'] = 'psd3';
         echo $this->parser->parse('ps-report/template', $fe, true); ?>
@@ -64,7 +64,7 @@ $this->load->view('main/sidebar');
       <div class="col-md-6">
         <!-- MTD < 3-->
         <?php
-        $fe['title'] = '%PS < 3 Hari MTD 1-<span class="full-date"></span>';
+        $fe['title'] = 'Fulfillment Experiences (%PS < 3 Hari) MTD 1-<span class="full-date"></span>';
         $fe['short'] = '%PS < 3 hari';
         $fe['prop'] = 'psm3';
         echo $this->parser->parse('ps-report/template', $fe, true); ?>
@@ -118,53 +118,6 @@ function getMonth(index) {
   return monthNames[index]
 }
 
-function getMin(arr, prop) {
-  if (prop == 'TOTAL') {
-    console.log(arr);
-  }
-  var min = 999;
-  var index = 0
-  for (var i = 0 ; i < arr.length ; i++) {
-    var item = arr[i][prop];
-    if (parseFloat(item) < min) {
-      if (prop == 'TOTAL') {
-        console.log(min + " > " + item);
-      }
-      index = i;
-      min = parseFloat(item);
-    }
-  }
-  return index;
-}
-
-function getMinKey(o, prop){
-  delete o[prop];
-    var vals = [];
-    for(var i in o){
-       vals.push(o[i]);
-    }
-
-    var max = Math.min.apply(null, vals);
-     for(var i in o){
-        if(o[i] == max){
-            return i;
-        }
-    }
-}
-
-function selectColor(value, minIndex, index) {
-  var color;
-  if ( value > 0.9) {
-    var color = 'green';
-  } else {
-    var color = 'yellow';
-  }
-  if( minIndex == index ) {
-    var color = 'red';
-  }
-  return color;
-}
-
 function getData(prop, input = ""){
   $.getJSON( "json/"+ prop +"/"+ input, function( data ) {
 
@@ -186,7 +139,7 @@ function getData(prop, input = ""){
           $('#' + prop + ' .' + key + '-' + item["WITEL"]).append(value);
         }
 
-        var value = (bef - now).toFixed(2);
+        var value = (now - bef).toFixed(2);
         if (value > 0) {
           color = "green"
         } else {
@@ -214,7 +167,7 @@ function getData(prop, input = ""){
         $('#' + prop + ' .' + key + '-TOTAL').append(value);
       }
 
-      var value = (bef - now).toFixed(2);
+      var value = (now - bef).toFixed(2);
       if (value > 0) {
         color = "green"
       } else {
@@ -230,6 +183,8 @@ $(".full-date").text(formatDate(new Date(fullDate)));
 
 getData('psd3', date + "/" + month + "/" + year);
 getData('psd2', date + "/" + month + "/" + year);
+getData('psm3', date + "/" + month + "/" + year);
+getData('psm2', date + "/" + month + "/" + year);
 </script>
 </body>
 </html>

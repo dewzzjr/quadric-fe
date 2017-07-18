@@ -83,4 +83,24 @@ class Json extends CI_Controller {
 			$tgl = $year . "-" . $month . "-" . $date;
 			echo $this->data_model->getDataPS2PerHari($tgl);
 		}
+
+		public function psm3($date = NULL, $month = NULL, $year = NULL) {
+			if ( $year === NULL OR $month === NULL OR $date === NULL) {
+				$year = date('Y');
+				$month = date('m');
+				$date = date('d');
+			}
+			$tgl = $year . "-" . $month . "-" . $date;
+			echo $this->data_model->getDataPS3PerBulan($tgl);
+		}
+
+		public function psm2($date = NULL, $month = NULL, $year = NULL) {
+			if ( $year === NULL OR $month === NULL OR $date === NULL) {
+				$year = date('Y');
+				$month = date('m');
+				$date = date('d');
+			}
+			$tgl = $year . "-" . $month . "-" . $date;
+			echo $this->data_model->getDataPS2PerBulan($tgl);
+		}
 }

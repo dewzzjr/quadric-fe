@@ -361,4 +361,171 @@ class Data_model extends CI_Model {
       return json_encode($result);
       // var_dump($result);die();
     }
+
+    public function getDataPS3PerBulan($tanggal){
+      $date = date_create($tanggal);
+      date_sub($date,date_interval_create_from_date_string("1 day"));
+      $tanggalSebelum = date_format($date,"Y-m-d");
+      $tanggal1 = date_format($date,"Y-m-") . '01';
+      $where = array(
+        'DATE(SC_TGLPS) <=' => $tanggal,
+        'DATE(SC_TGLPS) >=' => $tanggal1
+      );
+
+      $whereBefore = array(
+        'DATE(SC_TGLPS) <=' => $tanggalSebelum,
+        'DATE(SC_TGLPS) >=' => $tanggal1
+      );
+      // var_dump(date_format($date,"Y-m-"));die();
+      $this->db->cache_on();
+      $data = $this->db->select(
+        'WITEL,
+				SUM(SLG="COMPLY") AS COMPLY,
+				SUM(SLG="NOT COMPLY") AS NOTCOMPLY,
+				SUM(DATE(SC_TGLPS) <= "'.$tanggal.'" AND DATE(SC_TGLPS) >= "'.$tanggal1.'" ) TOTAL,
+				AVG(SLG="COMPLY") NOW')
+        ->from('reg_data')
+        ->where($where)
+        ->group_by('WITEL')->get()->result_array();
+
+      $dataPrev = $this->db->select(
+        'WITEL,
+        SUM(DATE(SC_TGLPS) = "'.$tanggalSebelum.'" AND DATE(SC_TGLPS) >= "'.$tanggal1.'" ) TOTAL,
+        AVG(SLG="COMPLY") AVG')
+        ->from('reg_data')
+        ->where($whereBefore)
+        ->group_by('WITEL')->get()->result_array();
+
+      $result['total'] = $this->db->select(
+        'SUM(SLG="COMPLY") AS COMPLY,
+				SUM(SLG="NOT COMPLY") AS NOTCOMPLY,
+        SUM(DATE(SC_TGLPS) = "'.$tanggal.'" AND DATE(SC_TGLPS) >= "'.$tanggal1.'" ) TOTAL,
+        AVG(SLG="COMPLY") NOW')
+        ->from('reg_data')
+        ->where($where)
+        ->get()->row_array();
+
+      $dataTotalPrev = $this->db->select(
+        '
+        SUM(DATE(SC_TGLPS) = "'.$tanggalSebelum.'" AND DATE(SC_TGLPS) >= "'.$tanggal1.'" ) TOTAL,
+        AVG(SLG="COMPLY") AVG')
+        ->from('reg_data')
+        ->where($whereBefore)
+        ->get()->row_array();
+
+      $this->db->cache_off();
+      $result['data'] = $data;
+
+      // insert prev avg
+      for ($i=0; $i < sizeof($result['data']) ; $i++) {
+        $result['data'][$i]['BEFORE'] =  $dataPrev[$i]['AVG'];
+      }
+      $result['total']['BEFORE'] =  $dataTotalPrev['AVG'];
+
+      // combine
+      if (isset($result['data'][7])) {
+        $new['WITEL'] = $result['data'][7]['WITEL'];
+        $new['COMPLY'] = strval( intval($result['data'][0]['COMPLY']) + intval($result['data'][7]['COMPLY']) );
+        $new['NOTCOMPLY'] = strval( intval($result['data'][0]['NOTCOMPLY']) + intval($result['data'][7]['NOTCOMPLY']) );
+        $new['TOTAL'] = strval( intval($result['data'][0]['TOTAL']) + intval($result['data'][7]['TOTAL']) );
+        $total['a'] = floatval($result['data'][0]['TOTAL']);
+        $total['b'] = floatval($result['data'][7]['TOTAL']);
+        $new['NOW'] = number_format((
+          (floatval($result['data'][0]['NOW']) * $total['a']) +
+          (floatval($result['data'][7]['NOW']) * $total['b'])
+        ) / floatval($new['TOTAL']) , 4);
+        $new['BEFORE'] = number_format((
+          (floatval($result['data'][0]['BEFORE']) * $total['a']) +
+          (floatval($result['data'][7]['BEFORE']) * $total['b'])
+        ) / floatval($new['TOTAL']) , 4);
+        $result['data'][0] = $new;
+        array_splice($result['data'], 7, 1);
+      }
+      return json_encode($result);
+      // var_dump($result);die();
+    }
+
+
+    public function getDataPS2PerBulan($tanggal){
+      $date = date_create($tanggal);
+      date_sub($date,date_interval_create_from_date_string("1 day"));
+      $tanggalSebelum = date_format($date,"Y-m-d");
+      $tanggal1 = date_format($date,"Y-m-") . '01';
+      $where = array(
+        'DATE(SC_TGLPS) <=' => $tanggal,
+        'DATE(SC_TGLPS) >=' => $tanggal1
+      );
+
+      $whereBefore = array(
+        'DATE(SC_TGLPS) <=' => $tanggalSebelum,
+        'DATE(SC_TGLPS) >=' => $tanggal1
+      );
+
+      $this->db->cache_on();
+      $data = $this->db->select(
+        'WITEL,
+				SUM(MTTI_GROUP = "1 HARI" OR MTTI_GROUP = "2 HARI") AS COMPLY,
+				SUM(NOT (MTTI_GROUP = "1 HARI" OR MTTI_GROUP = "2 HARI")) AS NOTCOMPLY,
+				SUM(DATE(SC_TGLPS) = "'.$tanggal.'" AND DATE(SC_TGLPS) >= "'.$tanggal1.'" ) TOTAL,
+				AVG(MTTI_GROUP = "1 HARI" OR MTTI_GROUP = "2 HARI") NOW')
+        ->from('reg_data')
+        ->where($where)
+        ->group_by('WITEL')->get()->result_array();
+
+      $dataPrev = $this->db->select(
+        'WITEL,
+        SUM(DATE(SC_TGLPS) = "'.$tanggalSebelum.'" AND DATE(SC_TGLPS) >= "'.$tanggal1.'" ) TOTAL,
+        AVG(MTTI_GROUP = "1 HARI" OR MTTI_GROUP = "2 HARI") AVG')
+        ->from('reg_data')
+        ->where($whereBefore)
+        ->group_by('WITEL')->get()->result_array();
+
+      $result['total'] = $this->db->select(
+        'SUM(MTTI_GROUP = "1 HARI" OR MTTI_GROUP = "2 HARI") AS COMPLY,
+				SUM(NOT(MTTI_GROUP = "1 HARI" OR MTTI_GROUP = "2 HARI")) AS NOTCOMPLY,
+        SUM(DATE(SC_TGLPS) = "'.$tanggal.'" AND DATE(SC_TGLPS) >= "'.$tanggal1.'" ) TOTAL,
+        AVG(MTTI_GROUP = "1 HARI" OR MTTI_GROUP = "2 HARI") NOW')
+        ->from('reg_data')
+        ->where($where)
+        ->get()->row_array();
+
+      $dataTotalPrev = $this->db->select(
+        '
+        SUM(DATE(SC_TGLPS) = "'.$tanggalSebelum.'" AND DATE(SC_TGLPS) >= "'.$tanggal1.'" ) TOTAL,
+        AVG(MTTI_GROUP = "1 HARI" OR MTTI_GROUP = "2 HARI") AVG')
+        ->from('reg_data')
+        ->where($whereBefore)
+        ->get()->row_array();
+
+      $this->db->cache_off();
+      $result['data'] = $data;
+
+      // insert prev avg
+      for ($i=0; $i < sizeof($result['data']) ; $i++) {
+        $result['data'][$i]['BEFORE'] =  $dataPrev[$i]['AVG'];
+      }
+      $result['total']['BEFORE'] =  $dataTotalPrev['AVG'];
+
+      // combine
+      if (isset($result['data'][7])) {
+        $new['WITEL'] = $result['data'][7]['WITEL'];
+        $new['COMPLY'] = strval( intval($result['data'][0]['COMPLY']) + intval($result['data'][7]['COMPLY']) );
+        $new['NOTCOMPLY'] = strval( intval($result['data'][0]['NOTCOMPLY']) + intval($result['data'][7]['NOTCOMPLY']) );
+        $new['TOTAL'] = strval( intval($result['data'][0]['TOTAL']) + intval($result['data'][7]['TOTAL']) );
+        $total['a'] = floatval($result['data'][0]['TOTAL']);
+        $total['b'] = floatval($result['data'][7]['TOTAL']);
+        $new['NOW'] = number_format((
+          (floatval($result['data'][0]['NOW']) * $total['a']) +
+          (floatval($result['data'][7]['NOW']) * $total['b'])
+        ) / floatval($new['TOTAL']) , 4);
+        $new['BEFORE'] = number_format((
+          (floatval($result['data'][0]['BEFORE']) * $total['a']) +
+          (floatval($result['data'][7]['BEFORE']) * $total['b'])
+        ) / floatval($new['TOTAL']) , 4);
+        $result['data'][0] = $new;
+        array_splice($result['data'], 7, 1);
+      }
+      return json_encode($result);
+      // var_dump($result);die();
+    }
 }
