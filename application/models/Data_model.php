@@ -16,7 +16,7 @@ class Data_model extends CI_Model {
       $query = $this->db->query(
         "LOAD DATA INFILE '$file'
         INTO TABLE reg_data
-        FIELDS TERMINATED BY ','
+        FIELDS TERMINATED BY '\t'
         LINES TERMINATED BY '\n'
         IGNORE 1 ROWS
         (
@@ -386,7 +386,7 @@ class Data_model extends CI_Model {
       $result['total'] = $this->db->select(
         'SUM(SLG="COMPLY") AS COMPLY,
 				SUM(SLG="NOT COMPLY") AS NOTCOMPLY,
-        SUM(DATE(SC_TGLPS) = "'.$tanggal.'" AND DATE(SC_TGLPS) >= "'.$tanggal1.'" ) TOTAL,
+        COUNT(SLG) TOTAL,
         AVG(SLG="COMPLY") NOW')
         ->from('reg_data')
         ->where($where)
@@ -470,7 +470,7 @@ class Data_model extends CI_Model {
       $result['total'] = $this->db->select(
         'SUM(MTTI_GROUP = "1 HARI" OR MTTI_GROUP = "2 HARI") AS COMPLY,
 				SUM(NOT(MTTI_GROUP = "1 HARI" OR MTTI_GROUP = "2 HARI")) AS NOTCOMPLY,
-        SUM(DATE(SC_TGLPS) = "'.$tanggal.'" AND DATE(SC_TGLPS) >= "'.$tanggal1.'" ) TOTAL,
+        COUNT(SLG) TOTAL,
         AVG(MTTI_GROUP = "1 HARI" OR MTTI_GROUP = "2 HARI") NOW')
         ->from('reg_data')
         ->where($where)
