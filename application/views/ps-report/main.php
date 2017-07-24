@@ -119,8 +119,10 @@ function getMonth(index) {
 }
 
 function getData(prop, input = ""){
-  $.getJSON( "json/"+ prop +"/"+ input, function( data ) {
-
+  $.ajax({
+    url: "json/"+ prop +"/"+ input,
+    dataType: 'json',
+    success: function( data ) {
       for (var i = 0; i < data.data.length; i++) {
         var item = data.data[i];
         for (var key in item) {
@@ -176,6 +178,25 @@ function getData(prop, input = ""){
       $('#' + prop + ' .DEVIASI-TOTAL').append('<span class="badge bg-' + color + '">' + value + '%</span>')
 
       $('#load-'+ prop).hide();
+    },
+    error : function(xhr, textStatus, errorThrown ) {
+      console.log("Error:" + prop + "/" + input);
+        if (textStatus == 'timeout') {
+            this.tryCount++;
+            if (this.tryCount <= this.retryLimit) {
+                //try again
+                $.ajax(this);
+                return;
+            }
+            return;
+        }
+        if (xhr.status == 500) {
+            alert("Script exhausted");
+            location.reload();
+        } else {
+            //handle error
+        }
+    }
   });
 }
 
