@@ -177,8 +177,10 @@ function selectColor(value, minIndex, index) {
 }
 
 function getData(prop, input = ""){
-  $.getJSON( "json/"+ prop +"/"+ input, function( data ) {
-
+  $.ajax({
+    url: "json/"+ prop +"/"+ input,
+    dataType: 'json',
+    success: function( data ) {
       if (prop == 'rytd') {
         console.log(data);
         var name = 'TOTAL';
@@ -208,39 +210,78 @@ function getData(prop, input = ""){
         $('#' + prop + '-total').append('<span class="badge bg-' + color + '">' + value + '%</span>')
         $('#load-'+ prop).hide();
       }
+    },
+    error : function(xhr, textStatus, errorThrown ) {
+      console.log("Error:" + prop + "/" + input);
+        if (textStatus == 'timeout') {
+            this.tryCount++;
+            if (this.tryCount <= this.retryLimit) {
+                //try again
+                $.ajax(this);
+                return;
+            }
+            return;
+        }
+        if (xhr.status == 500) {
+            alert("Script exhausted");
+            location.reload();
+        } else {
+            //handle error
+        }
+    }
   });
 }
 
 function getDataDTD(date, month, year){
-    $.getJSON( "json/dtd/"+ date +"/"+ month +"/"+ year, function( data ) {
+  $.ajax({
+    url: "json/dtd/"+ date +"/"+ month +"/"+ year,
+    dataType: 'json',
+    success: function( data ) {
       var minTotal = getMin(data.data, 'TOTAL');
-      console.log(minTotal);
       for (var i = 0; i < data.data.length; i++) {
         var minIndex = getMinKey(data.data[i], 'TGL');
         var item = data.data[i];
         for (var key in item) {
           if (key === 'length' || !item.hasOwnProperty(key)) continue;
-          var value = (parseFloat(item[key])*100).toFixed(2);//Math.floor( parseFloat(item[key]) * 10000) / 100 ;
+          var value = (parseFloat(item[key])*100).toFixed(2);
           var color = selectColor( parseFloat(item[key]), minIndex, key );
           $('#dtd-' + key.toLowerCase() + '-' + (i+1)).append('<span class="badge bg-' + color + '">' + value + '%</span>');
           if (key == 'TOTAL') {
             var color = selectColor( parseFloat(item[key]), minTotal, i );
             $('#rincian-tgl-' + (i+1)).append('<span class="badge bg-' + color + '">' + value + '%</span>');
           }
-          //console.log('#dtd-' + key.toLowerCase() + '-' + (i+1));
         }
       }
 
       var minIndex = getMinKey(data.total, 'TGL');
       for (var key in data.total) {
         if (key === 'length' || !data.total.hasOwnProperty(key)) continue;
-        var value = (parseFloat(data.total[key])*100).toFixed(2);//Math.floor( parseFloat(data.total[key]) * 10000) / 100 ;
+        var value = (parseFloat(data.total[key])*100).toFixed(2);
         var color = selectColor( parseFloat(data.total[key]), minIndex, key );
         $('#dtd-' + key.toLowerCase()).append('<span class="badge bg-' + color + '">' + value + '%</span>');
       }
       $('#load-TGL').hide();
       $('#load-dtd').hide();
-    });
+    },
+    error : function(xhr, textStatus, errorThrown ) {
+      console.log("Error:" + prop + "/" + input);
+        if (textStatus == 'timeout') {
+            this.tryCount++;
+            if (this.tryCount <= this.retryLimit) {
+                //try again
+                $.ajax(this);
+                return;
+            }
+            return;
+        }
+        if (xhr.status == 500) {
+            alert("Script exhausted");
+            location.reload();
+        } else {
+            //handle error
+        }
+    }
+  });
 }
 
 $(".full-date").text(formatDate(new Date(fullDate)));

@@ -351,19 +351,29 @@ class Data_model extends CI_Model {
 
     public function getDataPS3PerBulan($tanggal){
       $date = date_create($tanggal);
+      $tanggal1 = date_format($date,"Y-m-") . '01';
+
       date_sub($date,date_interval_create_from_date_string("1 day"));
       $tanggalSebelum = date_format($date,"Y-m-d");
-      $tanggal1 = date_format($date,"Y-m-") . '01';
-      $where = array(
-        'DATE(SC_TGLPS) <=' => $tanggal,
-        'DATE(SC_TGLPS) >=' => $tanggal1
-      );
 
-      $whereBefore = array(
-        'DATE(SC_TGLPS) <=' => $tanggalSebelum,
-        'DATE(SC_TGLPS) >=' => $tanggal1
-      );
-      // var_dump(date_format($date,"Y-m-"));die();
+      if ($tanggal == $tanggal1 ){
+        $where = array(
+          'DATE(SC_TGLPS) =' => $tanggal
+        );
+        $whereBefore = array(
+          'DATE(SC_TGLPS) =' => $tanggalSebelum,
+        );
+      } else {
+        $where = array(
+          'DATE(SC_TGLPS) <=' => $tanggal,
+          'DATE(SC_TGLPS) >=' => $tanggal1
+        );
+        $whereBefore = array(
+          'DATE(SC_TGLPS) <=' => $tanggalSebelum,
+          'DATE(SC_TGLPS) >=' => $tanggal1
+        );
+      }
+
       $this->db->cache_on();
       $data = $this->db->select(
         'WITEL,
@@ -435,18 +445,28 @@ class Data_model extends CI_Model {
 
     public function getDataPS2PerBulan($tanggal){
       $date = date_create($tanggal);
+      $tanggal1 = date_format($date,"Y-m-") . '01';
+
       date_sub($date,date_interval_create_from_date_string("1 day"));
       $tanggalSebelum = date_format($date,"Y-m-d");
-      $tanggal1 = date_format($date,"Y-m-") . '01';
-      $where = array(
-        'DATE(SC_TGLPS) <=' => $tanggal,
-        'DATE(SC_TGLPS) >=' => $tanggal1
-      );
 
-      $whereBefore = array(
-        'DATE(SC_TGLPS) <=' => $tanggalSebelum,
-        'DATE(SC_TGLPS) >=' => $tanggal1
-      );
+      if ($tanggal == $tanggal1 ){
+        $where = array(
+          'DATE(SC_TGLPS) =' => $tanggal
+        );
+        $whereBefore = array(
+          'DATE(SC_TGLPS) =' => $tanggalSebelum,
+        );
+      } else {
+        $where = array(
+          'DATE(SC_TGLPS) <=' => $tanggal,
+          'DATE(SC_TGLPS) >=' => $tanggal1
+        );
+        $whereBefore = array(
+          'DATE(SC_TGLPS) <=' => $tanggalSebelum,
+          'DATE(SC_TGLPS) >=' => $tanggal1
+        );
+      }
 
       $this->db->cache_on();
       $data = $this->db->select(
