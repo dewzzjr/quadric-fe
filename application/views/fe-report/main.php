@@ -41,12 +41,12 @@ $this->load->view('main/sidebar');
     <!-- /.row -->
     <div class="row">
       <!-- harian -->
-      <div class="col-md-6">
+      <div class="col-md-7">
         <!-- FE HARIAN -->
         <?php $this->load->view('fe-report/dtd'); ?>
       </div>
       <!-- /.col (left) -->
-      <div class="col-md-3 col-xs-6">
+      <div class="col-md-2 col-xs-6">
         <!-- MTD-->
         <?php
         $data['tipe'] = 'mtd';
