@@ -5,7 +5,8 @@
       <form action="admin/upload_file" method="post" enctype="multipart/form-data" id="upload_form">
         <div class="col-sm-12">
           <div class="btn-group">
-            <input name="submit" type="submit" value="Upload" class="btn btn-danger"/>
+            
+            <input name="submit" type="submit" value="Upload" class="btn btn-success"/>
             <input id="fileupload" name="data" type="file" class="filestyle"/>
           </div>
           <!-- /.btn-group -->
