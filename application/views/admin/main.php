@@ -39,6 +39,9 @@ $this->load->view('main/sidebar');
       <?php if ($this->session->flashdata('confirm')) : ?>
       <?php endif; ?>
       </div>
+    </div>
+    <!-- /.row -->
+    <div class="row">
       <div class="col-md-12">
         <!-- daftar tanggal-->
         <?php echo $this->parser->parse('delete/table', $daftar, true); ?>

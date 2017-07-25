@@ -23,7 +23,19 @@ class Admin extends CI_Controller {
   }
 
   public function remove($tanggal = NULL) {
+    if ($tanggal == 'all') {
+      $res = $this->data_model->deleteData();
+    } else {
+      $res = $this->data_model->deleteData($tanggal);
+    }
+    if (!$res['success']) {
+      $text = "Gagal menghapus data";$this->session->set_flashdata('error', $text);
+    } else {
+      $text = "Berhasil menghapus " . $res['rows'] . " data!";
+      $this->session->set_flashdata('success', $text);
+    }
 
+    redirect('admin');
   }
 
   public function upload() {
