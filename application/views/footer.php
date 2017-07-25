@@ -26,6 +26,11 @@ $(function () {
     language: 'id',
     autoclose: false
   });
+  $('#alt-datepicker').datepicker({
+    format: 'yyyy-mm-dd',
+    language: 'id',
+    autoclose: false
+  });
   //Data Table
   $('#dataTables').DataTable();
 });

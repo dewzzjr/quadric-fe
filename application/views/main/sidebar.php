@@ -27,7 +27,8 @@
         </ul>
       </li>
       <?php if ( $this->session->usertype === 'admin' ) { ?>
-      <li><a href="upload"><i class="fa fa-upload"></i> <span>Upload Data</span></a></li>
+      <!--li><a href="upload"><i class="fa fa-upload"></i> <span>Upload Data</span></a></li-->
+      <li><a href="admin/input"><i class="fa fa-edit"></i> <span>Input Data Regional</span></a></li>
       <li><a href="admin"><i class="fa fa-dashboard"></i> <span>Admin Data</span></a></li>
       <?php } ?>
 

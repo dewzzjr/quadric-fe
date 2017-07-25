@@ -45,6 +45,10 @@ class Data_model extends CI_Model {
       return $res;
     }
 
+    function inputData($data){
+      $this->db->insert('regional', $data);
+    }
+
     function deleteData($tanggal = NULL) {
       $this->db->from('reg_data');
 
