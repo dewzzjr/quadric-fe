@@ -3238,6 +3238,10 @@ table.text-center th {
 .register-page {
   background: #d2d6de;
 }
+.bg-black {
+  background: url('../../../assets/images/background.jpg') no-repeat center center fixed !important;
+  background-size: cover;
+}
 .login-box,
 .register-box {
   width: 360px;
