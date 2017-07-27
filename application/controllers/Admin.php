@@ -14,6 +14,7 @@ class Admin extends CI_Controller {
     }
     $this->load->model('data_model');
     $this->load->library('upload');
+    $this->load->library('form_validation');
   }
 
   public function index() {
@@ -45,37 +46,38 @@ class Admin extends CI_Controller {
 
   public function input() {
     $data['title'] = "Input Data Regional";
-    $this->load->view('reg-input/main', $data);
+    if ($this->input->server('REQUEST_METHOD') == 'GET') {
+      $this->load->view('reg-input/main', $data);
+    } else {
+      $this->form_validation->set_rules("tanggal", "Tanggal", 'required');
+      $this->form_validation->set_rules("reg1", "Regional 1", 'required');
+      $this->form_validation->set_rules("reg2", "Regional 2", 'required');
+      $this->form_validation->set_rules("reg3", "Regional 3", 'required');
+      $this->form_validation->set_rules("reg5", "Regional 5", 'required');
+      $this->form_validation->set_rules("reg6", "Regional 6", 'required');
+      $this->form_validation->set_rules("reg7", "Regional 7", 'required');
+
+      if ($this->form_validation->run()) {
+        $this->input_data();
+      }
+      else{
+        $this->load->view('reg-input/main', $data);
+      }
+    }
   }
 
   public function input_data(){
-    $this->load->library('form_validation');
-    $this->form_validation->set_rules("reg1", "Regional 1", 'required');
-    $this->form_validation->set_rules("reg2", "Regional 2", 'required');
-    $this->form_validation->set_rules("reg3", "Regional 3", 'required');
-    $this->form_validation->set_rules("reg5", "Regional 5", 'required');
-    $this->form_validation->set_rules("reg6", "Regional 6", 'required');
-    $this->form_validation->set_rules("reg7", "Regional 7", 'required');
-
-    if ($this->form_validation->run()) {
-
-      $data = array(
-        'tanggal' => $this->input->post("tanggal"),
-        'reg1' => $this->input->post("reg1"),
-        'reg2' => $this->input->post("reg2"),
-        'reg3' => $this->input->post("reg3"),
-        'reg5' => $this->input->post("reg5"),
-        'reg6' => $this->input->post("reg6"),
-        'reg7' => $this->input->post("reg7")
-      );
-      $this->data_model->inputData($data);
-      $this->input();
-    }
-    else{
-      $this->input();
-    }
-
-    
+    $data = array(
+      'tanggal' => $this->input->post("tanggal"),
+      'reg1' => $this->input->post("reg1"),
+      'reg2' => $this->input->post("reg2"),
+      'reg3' => $this->input->post("reg3"),
+      'reg5' => $this->input->post("reg5"),
+      'reg6' => $this->input->post("reg6"),
+      'reg7' => $this->input->post("reg7")
+    );
+    $this->data_model->inputData($data);
+    redirect('admin/input');
   }
 
   public function upload_file()
