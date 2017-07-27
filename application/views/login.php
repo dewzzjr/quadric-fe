@@ -8,7 +8,7 @@ $this->load->view('header', $data);
 <link rel="stylesheet" href="<?php echo base_url('assets/lte/plugins/iCheck/square/red.css'); ?>">
 </head>
 <!-- class="hold-transition skin-red sidebar-mini" -->
-<body class="hold-transition bg-black" >
+<body class="hold-transition login-page" >
 <div class="login-box">
   <div class="login-logo">
     <a href="<?php echo site_url(); ?>">Dashboard <b>Fulfillment Experience</b></a>
