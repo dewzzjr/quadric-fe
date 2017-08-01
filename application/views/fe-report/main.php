@@ -90,21 +90,25 @@ $this->load->view('main/sidebar');
       <!-- /.col (right-ytd) -->
     </div>
     <!-- /.row -->
+    <?php if($reg !== NULL):?>
     <div class="row">
-
       <div class="col-md-6">
         <!-- FE MTD -->
         <?php
+        $data['reg'] = $reg;
         $data['title'] = 'Fulfillment Experiences MTD 1-';
+        $data['tipe'] = 'mtd';
         $this->load->view('fe-report/fe-all', $data); ?>
       </div>
       <div class="col-md-6">
         <!-- FE YTD -->
         <?php
         $data['title'] = 'Fulfillment Experiences YTD s.d ';
+        $data['tipe'] = 'ytd';
         $this->load->view('fe-report/fe-all', $data); ?>
       </div>
     </div>
+    <?php endif; ?>
   </section>
   <!-- /.content -->
 </div>
@@ -126,21 +130,15 @@ function formatDate(dates) {
 }
 
 function getMonth(index) {
-  return monthNames[index]
+  return monthNames[index-1];
 }
 
 function getMin(arr, prop) {
-  if (prop == 'TOTAL') {
-    console.log(arr);
-  }
   var min = 999;
   var index = 0
   for (var i = 0 ; i < arr.length ; i++) {
     var item = arr[i][prop];
     if (parseFloat(item) < min) {
-      if (prop == 'TOTAL') {
-        console.log(min + " > " + item);
-      }
       index = i;
       min = parseFloat(item);
     }
@@ -180,9 +178,10 @@ function getData(prop, input = ""){
   $.ajax({
     url: "json/"+ prop +"/"+ input,
     dataType: 'json',
+    tryCount : 0,
+    retryLimit : 3,
     success: function( data ) {
       if (prop == 'rytd') {
-        console.log(data);
         var name = 'TOTAL';
       } else {
         var name = "AVG";
@@ -192,7 +191,7 @@ function getData(prop, input = ""){
 
       for (var i = 0; i < data.data.length; i++) {
         var item = data.data[i];
-        var value = (parseFloat(item[name])*100).toFixed(2);//Math.floor( parseFloat(item[name]) * 10000) / 100 ;
+        var value = (parseFloat(item[name])*100).toFixed(2);
         var color = selectColor( parseFloat(item[name]), minIndex, i );
 
         if (prop == 'rytd') {
@@ -206,8 +205,9 @@ function getData(prop, input = ""){
       if (prop == 'rytd') {
         $('#load-BLN').hide();
       } else {
-        var value =  (parseFloat(data.total)*100).toFixed(2);//Math.floor( parseFloat() * 10000) / 100 ;
+        var value =  (parseFloat(data.total)*100).toFixed(2);
         $('#' + prop + '-total').append('<span class="badge bg-' + color + '">' + value + '%</span>')
+        $('#' + prop + '-reg4').append('<span class="badge bg-' + color + '">' + value + '%</span>')
         $('#load-'+ prop).hide();
       }
     },
@@ -236,6 +236,8 @@ function getDataDTD(date, month, year){
   $.ajax({
     url: "json/dtd/"+ date +"/"+ month +"/"+ year,
     dataType: 'json',
+    tryCount : 0,
+    retryLimit : 3,
     success: function( data ) {
       var minTotal = getMin(data.data, 'TOTAL');
       for (var i = 0; i < data.data.length; i++) {

@@ -49,14 +49,23 @@ class Admin extends CI_Controller {
     if ($this->input->server('REQUEST_METHOD') == 'GET') {
       $this->load->view('reg-input/main', $data);
     } else {
+      //var_dump($_POST);
       $this->form_validation->set_rules("tanggal", "Tanggal", 'required');
-      $this->form_validation->set_rules("reg1", "Regional 1", 'required');
-      $this->form_validation->set_rules("reg2", "Regional 2", 'required');
-      $this->form_validation->set_rules("reg3", "Regional 3", 'required');
-      $this->form_validation->set_rules("reg5", "Regional 5", 'required');
-      $this->form_validation->set_rules("reg6", "Regional 6", 'required');
-      $this->form_validation->set_rules("reg7", "Regional 7", 'required');
-
+      $this->form_validation->set_rules("reg1", "MTD Regional 1", 'required');
+      $this->form_validation->set_rules("reg2", "MTD Regional 2", 'required');
+      $this->form_validation->set_rules("reg3", "MTD Regional 3", 'required');
+      $this->form_validation->set_rules("reg5", "MTD Regional 5", 'required');
+      $this->form_validation->set_rules("reg6", "MTD Regional 6", 'required');
+      $this->form_validation->set_rules("reg7", "MTD Regional 7", 'required');
+      $this->form_validation->set_rules("total", "Total MTD", 'required');
+      $this->form_validation->set_rules("yreg1", "YTD Regional 1", 'required');
+      $this->form_validation->set_rules("yreg2", "YTD Regional 2", 'required');
+      $this->form_validation->set_rules("yreg3", "YTD Regional 3", 'required');
+      $this->form_validation->set_rules("yreg5", "YTD Regional 5", 'required');
+      $this->form_validation->set_rules("yreg6", "YTD Regional 6", 'required');
+      $this->form_validation->set_rules("yreg7", "YTD Regional 7", 'required');
+      $this->form_validation->set_rules("ytotal", "Total YTD", 'required');
+      $this->form_validation->set_message('required', '{field} tidak boleh kosong.');
       if ($this->form_validation->run()) {
         $this->input_data();
       }
@@ -74,10 +83,22 @@ class Admin extends CI_Controller {
       'reg3' => $this->input->post("reg3"),
       'reg5' => $this->input->post("reg5"),
       'reg6' => $this->input->post("reg6"),
-      'reg7' => $this->input->post("reg7")
+      'reg7' => $this->input->post("reg7"),
+      'yreg1' => $this->input->post("yreg1"),
+      'yreg2' => $this->input->post("yreg2"),
+      'yreg3' => $this->input->post("yreg3"),
+      'yreg5' => $this->input->post("yreg5"),
+      'yreg6' => $this->input->post("yreg6"),
+      'yreg7' => $this->input->post("yreg7"),
+      'total' => $this->input->post("total"),
+      'ytotal' => $this->input->post("ytotal")
     );
-    $this->data_model->inputData($data);
-    redirect('admin/input');
+    $this->data_model->inputRegData($data);
+    $tanggal = date_create($data['tanggal']);
+    $d = $tanggal->format('d');
+    $m = $tanggal->format('m');
+    $y = $tanggal->format('Y');
+    redirect('dashboard/fe/'.$d.'/'.$m.'/'.$y);
   }
 
   public function upload_file()

@@ -53,5 +53,7 @@ $route['default_controller'] = 'dashboard';
 $route['signout'] = 'login/logout';
 $route['upload'] = 'admin/upload';
 $route['delete'] = 'admin/delete';
+$route['fe'] = 'dashboard/fe';
+$route['ps'] = 'dashboard/ps';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

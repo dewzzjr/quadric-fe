@@ -63,6 +63,7 @@ class Dashboard extends CI_Controller {
 			}
 			$data['title'] = "Dashboard FE";
 			$data['tanggal'] = date_create($year . "-" . $month . "-" . $date);
+			$data['reg'] = $this->data_model->getRegData( array('tanggal' => $tgl) )->row_array();
 			$this->load->view('fe-report/main', $data);
 		}
 

@@ -22,16 +22,17 @@
       <li class="treeview active">
         <a href="#" ><i class="fa fa-book"></i> <span>View Report</span> <i class="fa fa-angle-left pull-right"></i></a>
         <ul class="treeview-menu">
-          <li><a href="dashboard/ps"><i class="fa fa-circle-o"></i> Put in Service</a></li>
-          <li><a href="dashboard/fe"><i class="fa fa-circle-o"></i> Fullfillment Experiences</a></li>
+          <li><a href="ps"><i class="fa fa-circle-o"></i> Put in Service</a></li>
+          <li><a href="fe"><i class="fa fa-circle-o"></i> Fullfillment Experiences</a></li>
         </ul>
       </li>
-      <?php if ( $this->session->usertype === 'admin' ) { ?>
+      <?php if ( $this->session->usertype === 'admin' ) : ?>
       <!--li><a href="upload"><i class="fa fa-upload"></i> <span>Upload Data</span></a></li-->
-      <li><a href="admin/input"><i class="fa fa-edit"></i> <span>Input Data Regional</span></a></li>
+      <li><a href="admin/input<?php if ($this->uri->segment(1) == 'dashboard') { echo '/'.$this->uri->segment(5).'-'.$this->uri->segment(4).'-'.$this->uri->segment(3); } ?>">
+        <i class="fa fa-edit"></i> <span>Input Data Regional</span></a>
+      </li>
       <li><a href="admin"><i class="fa fa-dashboard"></i> <span>Admin Data</span></a></li>
-      <?php } ?>
-
+      <?php endif; ?>
     </ul>
     <!-- /.sidebar-menu -->
   </section>
