@@ -13,6 +13,10 @@ class Json extends CI_Controller {
 			$this->load->model('data_model');
     }
 
+    public function reg($tgl) {
+			echo json_encode($this->data_model->getRegData( array('tanggal' => $tgl) )->row_array());
+		}
+
     public function index() {
 			redirect('');
     }

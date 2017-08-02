@@ -122,6 +122,8 @@ function getData(prop, input = ""){
   $.ajax({
     url: "json/"+ prop +"/"+ input,
     dataType: 'json',
+    tryCount : 0,
+    retryLimit : 3,
     success: function( data ) {
       for (var i = 0; i < data.data.length; i++) {
         var item = data.data[i];

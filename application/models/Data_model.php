@@ -45,8 +45,8 @@ class Data_model extends CI_Model {
       return $res;
     }
 
-    function inputData($data){
-      $this->db->insert('regional', $data);
+    function inputRegData($data){
+      $this->db->replace('regional', $data);
     }
 
     function deleteData($tanggal = NULL) {
@@ -62,6 +62,10 @@ class Data_model extends CI_Model {
 
       $res['rows'] = $this->db->affected_rows();
       return $res;
+    }
+
+    function getRegData($data){
+      return $this->db->get('regional', $data);
     }
 
     function listTanggal(){

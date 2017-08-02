@@ -56,5 +56,19 @@
     <!-- /.table -->
   </div>
   <!-- /.box-body -->
+  <div class="box-footer">
+    <!-- Delete data -->
+    <div class="row">
+      <div class="col-sm-12">
+        <button type="button" class="btn btn-default btn-block"
+        data-toggle="modal"
+        data-target="#delete"
+        data-tanggal=""
+        data-count="">
+          <i class="fa fa-trash-o"></i> Delete All
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- /.box -->
