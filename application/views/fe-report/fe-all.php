@@ -1,4 +1,4 @@
-<?php $id = ($tipe == 'ytd' ? "yreg" : "reg"); ?>
+<?php $id = ($tipe == 'ytd' ? "y" : ""); ?>
 <div class="box box-solid box-danger">
   <div class="box-header">
     <h3 class="box-title"><?php echo $title; ?><span class="full-date"></span></h3>
@@ -14,19 +14,25 @@
         </tr>
         <tr>
           <th class="text-center">PS < 3 HARI</th>
-          <?php for ($i=1; $i < 8; $i++) {
-            if ($i == 4): ?>
-            <td class="text-center" id="<?php echo $tipe; ?>-reg4"></td>
-          <?php else: ?>
-            <td class="text-center"><?php echo $reg[$id.$i]; ?></td>
-          <?php endif;
-          } ?>
-          <td rowspan="2" class="text-center"><span class="badge bg-yellow">80,00%</span></td>
+          <?php for ($i=1; $i < 8; $i++) : ?>
+            <td class="text-center" id="<?php echo $tipe; ?>-reg<?php echo $i; ?>">
+          <?php if ($i != 4): ?>
+            <span class="fe label label-<?php echo ($reg[$id.'reg'.$i] >= 90 ? 'success' : 'warning'); ?>">
+              <?php echo $reg[$id.'reg'.$i]; ?>%
+            </span>
+          <?php endif; ?>
+            </td>
+          <?php endfor; ?>
+          <td rowspan="2" class="text-center">
+            <span class="label label-warning">
+              <?php echo $reg[$id.'total']; ?>%
+            </span>
+          </td>
         </tr>
         <tr>
           <th class="text-center">RANK</th>
-          <?php for ($i=0; $i < 7; $i++) { ?>
-            <td class="text-center"><?php echo $i+1 ?></td>
+          <?php for ($i=1; $i < 8; $i++) { ?>
+            <td class="text-center" id="rank-<?php echo $tipe; ?>-reg<?php echo $i; ?>"></td>
           <?php } ?>
         </tr>
     </table>

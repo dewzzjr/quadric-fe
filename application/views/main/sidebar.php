@@ -22,8 +22,14 @@
       <li class="treeview active">
         <a href="#" ><i class="fa fa-book"></i> <span>View Report</span> <i class="fa fa-angle-left pull-right"></i></a>
         <ul class="treeview-menu">
-          <li><a href="ps"><i class="fa fa-circle-o"></i> Put in Service</a></li>
-          <li><a href="fe"><i class="fa fa-circle-o"></i> Fullfillment Experiences</a></li>
+          <li>
+            <a href="<?php if ($this->uri->segment(1) == 'dashboard') { echo 'dashboard/ps/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->uri->segment(5); } else { echo 'ps'; } ?>">
+            <i class="fa fa-circle-o"></i> Put in Service</a>
+          </li>
+          <li>
+            <a href="<?php if ($this->uri->segment(1) == 'dashboard') { echo 'dashboard/fe/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->uri->segment(5); } else { echo 'fe'; } ?>">
+            <i class="fa fa-circle-o"></i> Fullfillment Experiences</a>
+            </li>
         </ul>
       </li>
       <?php if ( $this->session->usertype === 'admin' ) : ?>

@@ -41,7 +41,7 @@ $this->load->view('main/sidebar');
     <!-- /.row -->
     <div class="row">
       <!-- harian -->
-      <div class="col-md-7">
+      <div class="col-md-8">
         <!-- FE HARIAN -->
         <?php $this->load->view('fe-report/dtd'); ?>
       </div>
@@ -67,7 +67,7 @@ $this->load->view('main/sidebar');
         echo $this->parser->parse('fe-report/template-td', $data, true); ?>
       </div>
       <!-- /.col (right-mtd) -->
-      <div class="col-md-3 col-xs-6">
+      <div class="col-md-2 col-xs-6">
         <!-- YTD-->
         <?php
         $data['tipe'] = 'ytd';
@@ -115,6 +115,8 @@ $this->load->view('main/sidebar');
 </div>
 <?php $this->load->view('footer'); ?>
 <script>
+var mtdReg4;
+var ytdReg4;
 var monthNames = [
   "Januari", "Februari", "Maret",
   "April", "Mei", "Juni", "Juli",
@@ -164,12 +166,12 @@ function getMinKey(o, prop){
 function selectColor(value, minIndex, index) {
   var color;
   if ( value > 0.9) {
-    var color = 'green';
+    var color = 'success';
   } else {
-    var color = 'yellow';
+    var color = 'warning';
   }
   if( minIndex == index ) {
-    var color = 'red';
+    var color = 'danger';
   }
   return color;
 }
@@ -196,9 +198,9 @@ function getData(prop, input = ""){
 
         if (prop == 'rytd') {
           var bulan = monthNames[parseInt(item['BLN'])-1].substr(0,3).toLowerCase();
-          $('#rincian-bln-' + bulan).append('<span class="badge bg-' + color + '">' + value + '%</span>')
+          $('#rincian-bln-' + bulan).append('<span class="label label-' + color + '">' + value + '%</span>')
         }else {
-          $('#' + prop + '-' + item["WITEL"].toLowerCase()).append('<span class="badge bg-' + color + '">' + value + '%</span>')
+          $('#' + prop + '-' + item["WITEL"].toLowerCase()).append('<span class="label label-' + color + '">' + value + '%</span>')
         }
       }
 
@@ -206,8 +208,20 @@ function getData(prop, input = ""){
         $('#load-BLN').hide();
       } else {
         var value =  (parseFloat(data.total)*100).toFixed(2);
-        $('#' + prop + '-total').append('<span class="badge bg-' + color + '">' + value + '%</span>')
-        $('#' + prop + '-reg4').append('<span class="badge bg-' + color + '">' + value + '%</span>')
+        $('#' + prop + '-total').append('<span class="label label-' + color + '">' + value + '%</span>');
+        if ( prop == 'mtd' ) {
+          mtdReg4 = value;
+          var reg = getReg();
+          reg = assignRank(reg.mtd);
+          setRank(reg);
+        }
+        if ( prop == 'ytd' ) {
+          ytdReg4 = value;
+          var reg = getReg();
+          reg = assignRank(reg.ytd);
+          setRank(reg);
+        }
+        $('#' + prop + '-reg4').append('<span class="label label-' + color + '">' + value + '%</span>')
         $('#load-'+ prop).hide();
       }
     },
@@ -247,10 +261,10 @@ function getDataDTD(date, month, year){
           if (key === 'length' || !item.hasOwnProperty(key)) continue;
           var value = (parseFloat(item[key])*100).toFixed(2);
           var color = selectColor( parseFloat(item[key]), minIndex, key );
-          $('#dtd-' + key.toLowerCase() + '-' + (i+1)).append('<span class="badge bg-' + color + '">' + value + '%</span>');
+          $('#dtd-' + key.toLowerCase() + '-' + (i+1)).append('<span class="label label-' + color + '">' + value + '%</span>');
           if (key == 'TOTAL') {
             var color = selectColor( parseFloat(item[key]), minTotal, i );
-            $('#rincian-tgl-' + (i+1)).append('<span class="badge bg-' + color + '">' + value + '%</span>');
+            $('#rincian-tgl-' + (i+1)).append('<span class="label label-' + color + '">' + value + '%</span>');
           }
         }
       }
@@ -260,7 +274,7 @@ function getDataDTD(date, month, year){
         if (key === 'length' || !data.total.hasOwnProperty(key)) continue;
         var value = (parseFloat(data.total[key])*100).toFixed(2);
         var color = selectColor( parseFloat(data.total[key]), minIndex, key );
-        $('#dtd-' + key.toLowerCase()).append('<span class="badge bg-' + color + '">' + value + '%</span>');
+        $('#dtd-' + key.toLowerCase()).append('<span class="label label-' + color + '">' + value + '%</span>');
       }
       $('#load-TGL').hide();
       $('#load-dtd').hide();
@@ -286,15 +300,79 @@ function getDataDTD(date, month, year){
   });
 }
 
+function assignRank(array) {
+  array.sort(function(a, b){
+      return b.value - a.value;
+  });
+
+  var rank = 1;
+  for (var i = 0; i < array.length; i++) {
+    // increase rank only if current score less than previous
+    if (i > 0 && array[i].value < array[i - 1].value) {
+      rank++;
+    }
+      array[i].rank = rank;
+  }
+  return array;
+}
+
+function setRank(data) {
+  for (var i = 0; i < data.length; i++) {
+    var item = data[i];
+    if (i == 0) {
+      var color = 'green';
+    } else if (i == data.length-1) {
+      var color = 'red';
+    } else {
+      var color = 'yellow';
+    }
+    $('#rank-' + item.id).append('<span class="badge bg-' + color + '">' + item.rank + '</span>');
+
+  }
+}
+
+function getReg() {
+  var mtd = "";
+  var ytd = "";
+  $('.fe').each(function(i, obj) {
+    var id = $(this).parent().attr('id');
+    var value = parseFloat($(this).html());
+
+    if(id.match(/mtd-reg./)) {
+      mtd += "{"
+      mtd += '\"id\" : \"' + id + "\",";
+      mtd += '\"value\" :' + value;
+      mtd += "},";
+    } else {
+      ytd += "{"
+      ytd += '\"id\" : \"' + id + "\",";
+      ytd += '\"value\" :' + value;
+      ytd += "},";
+    }
+
+    // console.log($(this).parent().attr('id'));
+    // console.log(parseFloat($(this).text()));
+  });
+
+  mtd += "{\"id\" : \"mtd-reg4\", \"value\" : " + mtdReg4 + "}"; //mtd.replace(/,\s*$/, "");
+  ytd += "{\"id\" : \"ytd-reg4\", \"value\" : " + ytdReg4 + "}";
+  var json = "{\"mtd\":[" + mtd + "],\"ytd\":[" + ytd + "]}";
+  json = eval("(" + json + ")");
+  return json;
+}
+
 $(".full-date").text(formatDate(new Date(fullDate)));
 $(".bulan").text(getMonth(month));
 $(".tahun").text(year);
 $(".tanggal").text(date);
 
-getDataDTD(date, month, year);
-getData('mtd', month + "/" + year);
-getData('ytd', year);
-getData('rytd', month + "/" + year);
+getDataDTD(date, month, year)
+getData('mtd', month + "/" + year)
+getData('ytd', year)
+getData('rytd', month + "/" + year)
+
+
+
 </script>
 </body>
 </html>
