@@ -98,14 +98,14 @@ $this->load->view('main/sidebar');
         $data['reg'] = $reg;
         $data['title'] = 'Fulfillment Experiences MTD 1-';
         $data['tipe'] = 'mtd';
-        $this->load->view('fe-report/fe-all', $data); ?>
+        $this->load->view('fe-report/reg', $data); ?>
       </div>
       <div class="col-md-6">
         <!-- FE YTD -->
         <?php
         $data['title'] = 'Fulfillment Experiences YTD s.d ';
         $data['tipe'] = 'ytd';
-        $this->load->view('fe-report/fe-all', $data); ?>
+        $this->load->view('fe-report/reg', $data); ?>
       </div>
     </div>
     <?php endif; ?>
@@ -223,6 +223,7 @@ function getData(prop, input = ""){
         }
         $('#' + prop + '-reg4').append('<span class="label label-' + color + '">' + value + '%</span>')
         $('#load-'+ prop).hide();
+        $('#load-'+ prop +'-reg').hide();
       }
     },
     error : function(xhr, textStatus, errorThrown ) {

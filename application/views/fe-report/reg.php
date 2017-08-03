@@ -39,5 +39,8 @@
     <!-- /.form group -->
   </div>
   <!-- /.box-body -->
+  <div class="overlay" id="load-<?php echo $tipe; ?>-reg">
+    <i class="fa fa-refresh fa-spin"></i>
+  </div>
 </div>
 <!-- /.box -->
