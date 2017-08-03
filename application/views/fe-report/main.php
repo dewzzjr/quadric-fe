@@ -98,17 +98,58 @@ $this->load->view('main/sidebar');
         $data['reg'] = $reg;
         $data['title'] = 'Fulfillment Experiences MTD 1-';
         $data['tipe'] = 'mtd';
-        $this->load->view('fe-report/fe-all', $data); ?>
+        $this->load->view('fe-report/reg', $data); ?>
       </div>
       <div class="col-md-6">
         <!-- FE YTD -->
         <?php
         $data['title'] = 'Fulfillment Experiences YTD s.d ';
         $data['tipe'] = 'ytd';
-        $this->load->view('fe-report/fe-all', $data); ?>
+        $this->load->view('fe-report/reg', $data); ?>
       </div>
     </div>
     <?php endif; ?>
+    <div class="row">
+      <div class="col-md-12">
+        <?php
+        $data['title'] = 'Fulfillment Experiences TREG 4
+        <span class="help-block">MTD <span class="bulan"></span> <span class="tahun"></span>';
+        $data['tipe'] = 'rmtd';
+        $data['size'] = '150';
+        echo $this->parser->parse('fe-report/chart', $data, true); ?>
+        <?php
+        $data['title'] = 'Fulfillment Experiences R4
+        <span class="help-block">YTD <span class="tahun"></span>';
+        $data['tipe'] = 'rytd';
+        $data['size'] = '150';
+        echo $this->parser->parse('fe-report/chart', $data, true); ?>
+      </div>
+      <div class="col-md-6">
+        <?php
+        $data['title'] = 'Fulfillment Experiences WITEL
+        <span class="help-block">MTD <span class="bulan"></span> <span class="tahun"></span>';
+        $data['tipe'] = 'mtd';
+        $data['size'] = '200';
+        echo $this->parser->parse('fe-report/chart', $data, true); ?>
+      </div>
+      <div class="col-md-6">
+        <?php
+        $data['title'] = 'Fulfillment Experiences WITEL
+        <span class="help-block">YTD <span class="tahun"></span>';
+        $data['tipe'] = 'ytd';
+        $data['size'] = '200';
+        echo $this->parser->parse('fe-report/chart', $data, true); ?>
+      </div>
+      <div class="col-md-12">
+        <?php
+        $data['title'] = 'Daily Fulfillment Experiences WITEL
+        <span class="help-block"><span class="bulan"></span> <span class="tahun"></span>';
+        $data['tipe'] = 'dtd';
+        $data['size'] = '250';
+        echo $this->parser->parse('fe-report/chart', $data, true); ?>
+      </div>
+    </div>
+    <!-- /.row -->
   </section>
   <!-- /.content -->
 </div>
@@ -176,6 +217,273 @@ function selectColor(value, minIndex, index) {
   return color;
 }
 
+function setTable( prop, data ) {
+  var chartData = [];
+  var chartLabels = [];
+  if (prop == 'rytd') {
+    var name = 'TOTAL';
+  } else {
+    var name = "AVG";
+  }
+
+  var minIndex = getMin(data.data, name);
+
+  for (var i = 0; i < data.data.length; i++) {
+    var item = data.data[i];
+    var value = (parseFloat(item[name])*100).toFixed(2);
+    var color = selectColor( parseFloat(item[name]), minIndex, i );
+    chartData.push(value);
+    var label;
+    if (prop == 'rytd') {
+      label = monthNames[parseInt(item['BLN'])-1];
+      var bulan = label.substr(0,3).toLowerCase();
+      $('#rincian-bln-' + bulan).append('<span class="label label-' + color + '">' + value + '%</span>');
+    } else {
+      label = item["WITEL"];
+      $('#' + prop + '-' + label.toLowerCase()).append('<span class="label label-' + color + '">' + value + '%</span>')
+    }
+    chartLabels.push(label);
+  }
+
+  if (prop == 'rytd') {
+    $('#load-BLN').hide();
+  } else {
+    var value =  (parseFloat(data.total)*100).toFixed(2);
+    $('#' + prop + '-total').append('<span class="label label-' + color + '">' + value + '%</span>');
+    if ( prop == 'mtd' ) {
+      mtdReg4 = value;
+      var reg = getReg();
+      reg = assignRank(reg.mtd);
+      setRank(reg);
+    }
+    if ( prop == 'ytd' ) {
+      ytdReg4 = value;
+      var reg = getReg();
+      reg = assignRank(reg.ytd);
+      setRank(reg);
+    }
+    $('#' + prop + '-reg4').append('<span class="label label-' + color + '">' + value + '%</span>')
+    $('#load-'+ prop).hide();
+    $('#load-'+ prop +'-reg').hide();
+  }
+  setChart(prop, chartLabels, chartData);
+}
+
+function setTableDay( data ) {
+  var chartData = [];
+  var chartLabels = [];
+  var chartDataDay = [];
+  var minTotal = getMin(data.data, 'TOTAL');
+  for (var i = 0; i < data.data.length; i++) {
+    var minIndex = getMinKey(data.data[i], 'TGL');
+    var item = data.data[i];
+    for (var key in item) {
+      if (i == 0 && key != 'TOTAL') {
+        chartDataDay[key] = [];
+        chartDataDay[key]['data'] = [];
+      }
+      if (key === 'length' || !item.hasOwnProperty(key)) continue;
+      var value = (parseFloat(item[key])*100).toFixed(2);
+      var color = selectColor( parseFloat(item[key]), minIndex, key );
+
+      $('#dtd-' + key.toLowerCase() + '-' + (i+1)).append('<span class="label label-' + color + '">' + value + '%</span>');
+      if (key == 'TOTAL') {
+        var color = selectColor( parseFloat(item[key]), minTotal, i );
+        $('#rincian-tgl-' + (i+1)).append('<span class="label label-' + color + '">' + value + '%</span>');
+        chartData.push(value);
+        chartLabels.push(i+1);
+      } else {
+        chartDataDay[key]['data'].push(value);
+      }
+    }
+  }
+  setChart('rmtd', chartLabels, chartData);
+  setChartDay(chartLabels, chartDataDay);
+
+  var minIndex = getMinKey(data.total, 'TGL');
+  for (var key in data.total) {
+    if (key === 'length' || !data.total.hasOwnProperty(key)) continue;
+    var value = (parseFloat(data.total[key])*100).toFixed(2);
+    var color = selectColor( parseFloat(data.total[key]), minIndex, key );
+    $('#dtd-' + key.toLowerCase()).append('<span class="label label-' + color + '">' + value + '%</span>');
+  }
+  $('#load-TGL').hide();
+  $('#load-dtd').hide();
+}
+
+function setChartDay(labels, data) {
+  var datasets = []
+  var color = [
+              'rgba(255, 99, 132, 0.8)',
+              'rgba(54, 162, 235, 0.8)',
+              'rgba(255, 206, 86, 0.8)',
+              'rgba(75, 192, 192, 0.8)',
+              'rgba(153, 102, 255, 0.8)',
+              'rgba(255, 159, 64, 0.8)',
+              'rgba(0, 0, 0, 0.8)'
+              ]
+  for (var key in data) {
+    var index = Object.keys(data).indexOf(key);
+    datasets.push({
+      label: key,
+      data: data[key].data,
+      borderColor: color[index],
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+    })
+  }
+  var chartData = {
+    labels  : labels,
+    datasets: datasets
+  }
+  var chartCanvas          = $('#dtd-chart').get(0).getContext('2d')
+  var chartOptions = {
+    //Boolean - If we should show the scale at all
+    showScale               : true,
+    //Boolean - Whether grid lines are shown across the chart
+    scaleShowGridLines      : false,
+    //String - Colour of the grid lines
+    scaleGridcolor          : 'rgba(0,0,0,.05)',
+    //Number - Width of the grid lines
+    scaleGridLineWidth      : 1,
+    //Boolean - Whether to show horizontal lines (except X axis)
+    scaleShowHorizontalLines: true,
+    //Boolean - Whether to show vertical lines (except Y axis)
+    scaleShowVerticalLines  : true,
+    //Boolean - Whether the line is curved between points
+    bezierCurve             : false,
+    //Number - Tension of the bezier curve between points
+    bezierCurveTension      : 0.3,
+    //Boolean - Whether to show a dot for each point
+    pointDot                : true,
+    //Number - Radius of each point dot in pixels
+    pointDotRadius          : 4,
+    //Number - Pixel width of point dot stroke
+    pointDotStrokeWidth     : 1,
+    //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+    pointHitDetectionRadius : 20,
+    //Boolean - Whether to show a stroke for datasets
+    datasetStroke           : true,
+    //Number - Pixel width of dataset stroke
+    datasetStrokeWidth      : 2,
+    //Boolean - Whether to fill the dataset with a color
+    fill                    : false,
+    //String - A legend template
+    legendTemplate          : '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span style="background-color:<%=datasets[i].color%>"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>',
+    //Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+    maintainAspectRatio     : true,
+    //Boolean - whether to make the chart responsive to window resizing
+    responsive              : true
+  }
+  var chart = new Chart(chartCanvas, {
+      type: 'line',
+      data: chartData,
+      options: chartOptions
+  })
+}
+function setChart(prop, labels, data) {
+  var chartData = {
+    labels  : labels,
+    datasets: [
+      {
+        label               : '%',
+        data                : data
+      }
+    ]
+  }
+  var chartCanvas          = $('#'+ prop +'-chart').get(0).getContext('2d')
+  if (prop == 'mtd' || prop == 'ytd') {
+    chartData.datasets[0].backgroundColor = [
+                'rgba(255, 99, 132, 0.8)',
+                'rgba(54, 162, 235, 0.8)',
+                'rgba(255, 206, 86, 0.8)',
+                'rgba(75, 192, 192, 0.8)',
+                'rgba(153, 102, 255, 0.8)',
+                'rgba(255, 159, 64, 0.8)'
+            ]
+
+    var chartOptions                  = {
+      //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+      scaleBeginAtZero        : true,
+      //Boolean - Whether grid lines are shown across the chart
+      scaleShowGridLines      : true,
+      //String - Colour of the grid lines
+      scaleGridLineColor      : 'rgba(0,0,0,.05)',
+      //Number - Width of the grid lines
+      scaleGridLineWidth      : 1,
+      //Boolean - Whether to show horizontal lines (except X axis)
+      scaleShowHorizontalLines: true,
+      //Boolean - Whether to show vertical lines (except Y axis)
+      scaleShowVerticalLines  : true,
+      //Boolean - If there is a stroke on each bar
+      barShowStroke           : true,
+      //Number - Pixel width of the bar stroke
+      barStrokeWidth          : 2,
+      //Number - Spacing between each of the X value sets
+      barValueSpacing         : 5,
+      //Number - Spacing between data sets within X values
+      barDatasetSpacing       : 1,
+      //String - A legend template
+      legendTemplate          : '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span style="background-color:<%=datasets[i].fillColor%>"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>',
+      //Boolean - whether to make the chart responsive
+      responsive              : true,
+      maintainAspectRatio     : true
+    }
+    var chart = new Chart(chartCanvas, {
+        type: 'horizontalBar',
+        data: chartData,
+        options: chartOptions
+    })
+  } else {
+    chartData.datasets[0].borderColor = 'rgba(54, 162, 235, 0.8)'
+    chartData.datasets[0].backgroundColor = 'rgba(54, 162, 235, 0.1)'
+    var chartOptions = {
+      //Boolean - If we should show the scale at all
+      showScale               : true,
+      //Boolean - Whether grid lines are shown across the chart
+      scaleShowGridLines      : false,
+      //String - Colour of the grid lines
+      scaleGridcolor          : 'rgba(0,0,0,.05)',
+      //Number - Width of the grid lines
+      scaleGridLineWidth      : 1,
+      //Boolean - Whether to show horizontal lines (except X axis)
+      scaleShowHorizontalLines: true,
+      //Boolean - Whether to show vertical lines (except Y axis)
+      scaleShowVerticalLines  : true,
+      //Boolean - Whether the line is curved between points
+      bezierCurve             : false,
+      //Number - Tension of the bezier curve between points
+      bezierCurveTension      : 0.3,
+      //String - Line color in rgba
+      borderColor             : 'rgba(54, 162, 235, 0.8)',
+      //Boolean - Whether to show a dot for each point
+      pointDot                : true,
+      //Number - Radius of each point dot in pixels
+      pointDotRadius          : 4,
+      //Number - Pixel width of point dot stroke
+      pointDotStrokeWidth     : 1,
+      //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+      pointHitDetectionRadius : 20,
+      //Boolean - Whether to show a stroke for datasets
+      datasetStroke           : true,
+      //Number - Pixel width of dataset stroke
+      datasetStrokeWidth      : 2,
+      //Boolean - Whether to fill the dataset with a color
+      datasetFill             : false,
+      //String - A legend template
+      legendTemplate          : '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span style="background-color:<%=datasets[i].color%>"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>',
+      //Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+      maintainAspectRatio     : true,
+      //Boolean - whether to make the chart responsive to window resizing
+      responsive              : true
+    }
+    var chart = new Chart(chartCanvas, {
+        type: 'line',
+        data: chartData,
+        options: chartOptions
+    })
+  }
+}
+
 function getData(prop, input = ""){
   $.ajax({
     url: "json/"+ prop +"/"+ input,
@@ -183,47 +491,7 @@ function getData(prop, input = ""){
     tryCount : 0,
     retryLimit : 3,
     success: function( data ) {
-      if (prop == 'rytd') {
-        var name = 'TOTAL';
-      } else {
-        var name = "AVG";
-      }
-
-      var minIndex = getMin(data.data, name);
-
-      for (var i = 0; i < data.data.length; i++) {
-        var item = data.data[i];
-        var value = (parseFloat(item[name])*100).toFixed(2);
-        var color = selectColor( parseFloat(item[name]), minIndex, i );
-
-        if (prop == 'rytd') {
-          var bulan = monthNames[parseInt(item['BLN'])-1].substr(0,3).toLowerCase();
-          $('#rincian-bln-' + bulan).append('<span class="label label-' + color + '">' + value + '%</span>')
-        }else {
-          $('#' + prop + '-' + item["WITEL"].toLowerCase()).append('<span class="label label-' + color + '">' + value + '%</span>')
-        }
-      }
-
-      if (prop == 'rytd') {
-        $('#load-BLN').hide();
-      } else {
-        var value =  (parseFloat(data.total)*100).toFixed(2);
-        $('#' + prop + '-total').append('<span class="label label-' + color + '">' + value + '%</span>');
-        if ( prop == 'mtd' ) {
-          mtdReg4 = value;
-          var reg = getReg();
-          reg = assignRank(reg.mtd);
-          setRank(reg);
-        }
-        if ( prop == 'ytd' ) {
-          ytdReg4 = value;
-          var reg = getReg();
-          reg = assignRank(reg.ytd);
-          setRank(reg);
-        }
-        $('#' + prop + '-reg4').append('<span class="label label-' + color + '">' + value + '%</span>')
-        $('#load-'+ prop).hide();
-      }
+      setTable(prop, data);
     },
     error : function(xhr, textStatus, errorThrown ) {
       console.log("Error:" + prop + "/" + input);
@@ -246,38 +514,14 @@ function getData(prop, input = ""){
   });
 }
 
-function getDataDTD(date, month, year){
+function getDataDay(date, month, year){
   $.ajax({
     url: "json/dtd/"+ date +"/"+ month +"/"+ year,
     dataType: 'json',
     tryCount : 0,
     retryLimit : 3,
     success: function( data ) {
-      var minTotal = getMin(data.data, 'TOTAL');
-      for (var i = 0; i < data.data.length; i++) {
-        var minIndex = getMinKey(data.data[i], 'TGL');
-        var item = data.data[i];
-        for (var key in item) {
-          if (key === 'length' || !item.hasOwnProperty(key)) continue;
-          var value = (parseFloat(item[key])*100).toFixed(2);
-          var color = selectColor( parseFloat(item[key]), minIndex, key );
-          $('#dtd-' + key.toLowerCase() + '-' + (i+1)).append('<span class="label label-' + color + '">' + value + '%</span>');
-          if (key == 'TOTAL') {
-            var color = selectColor( parseFloat(item[key]), minTotal, i );
-            $('#rincian-tgl-' + (i+1)).append('<span class="label label-' + color + '">' + value + '%</span>');
-          }
-        }
-      }
-
-      var minIndex = getMinKey(data.total, 'TGL');
-      for (var key in data.total) {
-        if (key === 'length' || !data.total.hasOwnProperty(key)) continue;
-        var value = (parseFloat(data.total[key])*100).toFixed(2);
-        var color = selectColor( parseFloat(data.total[key]), minIndex, key );
-        $('#dtd-' + key.toLowerCase()).append('<span class="label label-' + color + '">' + value + '%</span>');
-      }
-      $('#load-TGL').hide();
-      $('#load-dtd').hide();
+      setTableDay( data );
     },
     error : function(xhr, textStatus, errorThrown ) {
       console.log("Error:" + prop + "/" + input);
@@ -366,12 +610,10 @@ $(".bulan").text(getMonth(month));
 $(".tahun").text(year);
 $(".tanggal").text(date);
 
-getDataDTD(date, month, year)
+getDataDay(date, month, year)
 getData('mtd', month + "/" + year)
 getData('ytd', year)
 getData('rytd', month + "/" + year)
-
-
 
 </script>
 </body>

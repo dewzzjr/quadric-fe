@@ -4,7 +4,8 @@
 <script type="text/javascript" src="assets/lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
 <script type="text/javascript" src="assets/lte/plugins/datepicker/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="assets/lte/plugins/datepicker/locales/bootstrap-datepicker.id.js"></script>
-<script type="text/javascript" src="assets/lte/plugins/fastclick/fastclick.js"></script>
+<script type="text/javascript" src="assets/lte/plugins/fastclick/fastclick.min.js"></script>
+<script type="text/javascript" src="assets/lte/plugins/chartjs/Chart.min.js"></script>
 <script type="text/javascript" src="assets/lte/plugins/iCheck/icheck.min.js"></script>
 <script type="text/javascript" src="assets/lte/plugins/bootstrap-filestyle/bootstrap-filestyle.min.js"></script>
 <script type="text/javascript" src="assets/lte/plugins/datatables/jquery.dataTables.min.js"></script>
