@@ -65,7 +65,7 @@ class Data_model extends CI_Model {
     }
 
     function getRegData($data){
-      return $this->db->get('regional', $data);
+      return $this->db->get_where('regional', $data);
     }
 
     function listTanggal(){
