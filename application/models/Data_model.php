@@ -11,33 +11,57 @@ class Data_model extends CI_Model {
     * Admin function
     */
 
-    function importData($file){
+    function importData($file, $delimiter){
       $file = str_replace("\\","/",$file);
+      if($delimiter == '\t') {
+        $col = '@`' . trim(preg_replace('/\t+/', '`, @`', fgets(fopen($file, 'r')) )) . '`';
+      } else {
+        $col = '@`' . trim(preg_replace(',', '`, @`', fgets(fopen($file, 'r')) )) . '`';
+      }
+      //var_dump($col);var_dump($delimiter);die();
+      // $query = $this->db->query(
+      //   "LOAD DATA INFILE '$file'
+      //   IGNORE INTO TABLE reg_data
+      //   FIELDS TERMINATED BY '$delimiter'
+      //   LINES TERMINATED BY '\n'
+      //   IGNORE 1 ROWS
+      //   (
+      //     ALPRO, BEFORE_CA, CHANEL, CHANEL_APP,
+      //     CSEG, Cancel, MTTI_GROUP, `MTD MTTI`,
+      //     SLG, APP,
+      //     DURASI, DURASI_FO, DURASI_PI, DURASI_RE, DURASI_UN, DURASI_VA,
+      //     @var1, JENISPSB, KANDATEL, KAWASAN, KODEFIKASI_SC,
+      //     NDEM, `Number of Records`,
+      //     ORDER_ID, PS_DONE, REASON_CANCEL,
+      //     @var2, @var3, @var4, @var5, @var6, @var7,
+      //     `SLG (copy)`, STATUS, STATUS_INDIHOME, STATUS_SERVICE, TYPE_PIPE, WITEL
+      //   )
+      //   SET
+      //   ISISKA_TGLVA = STR_TO_DATE(@var1, '%m/%d/%Y %r'),
+      //   SC_TGLCA = STR_TO_DATE(@var2, '%m/%d/%Y %r'),
+      //   SC_TGLCREATE = STR_TO_DATE(@var3, '%m/%d/%Y %r'),
+      //   SC_TGLFO = STR_TO_DATE(@var4, '%m/%d/%Y %r'),
+      //   SC_TGLPI = STR_TO_DATE(@var5, '%m/%d/%Y %r'),
+      //   SC_TGLPS = STR_TO_DATE(@var6, '%m/%d/%Y %r'),
+      //   SC_TGLUNSC = STR_TO_DATE(@var7, '%m/%d/%Y %r')"
+      // );
+
       $query = $this->db->query(
         "LOAD DATA INFILE '$file'
-        INTO TABLE reg_data
-        FIELDS TERMINATED BY '\t'
+        REPLACE INTO TABLE reg_data
+        FIELDS TERMINATED BY '$delimiter'
         LINES TERMINATED BY '\n'
         IGNORE 1 ROWS
         (
-          ALPRO, BEFORE_CA, CHANEL, CHANEL_APP,
-          CSEG, Cancel, MTTI_GROUP, `MTD MTTI`,
-          SLG, APP,
-          DURASI, DURASI_FO, DURASI_PI, DURASI_RE, DURASI_UN, DURASI_VA,
-          @var1, JENISPSB, KANDATEL, KAWASAN, KODEFIKASI_SC,
-          NDEM, `Number of Records`,
-          ORDER_ID, PS_DONE, REASON_CANCEL,
-          @var2, @var3, @var4, @var5, @var6, @var7,
-          `SLG (copy)`, STATUS, STATUS_INDIHOME, STATUS_SERVICE, TYPE_PIPE, WITEL
+          ".$col."
         )
         SET
-        ISISKA_TGLVA = STR_TO_DATE(@var1, '%m/%d/%Y %r'),
-        SC_TGLCA = STR_TO_DATE(@var2, '%m/%d/%Y %r'),
-        SC_TGLCREATE = STR_TO_DATE(@var3, '%m/%d/%Y %r'),
-        SC_TGLFO = STR_TO_DATE(@var4, '%m/%d/%Y %r'),
-        SC_TGLPI = STR_TO_DATE(@var5, '%m/%d/%Y %r'),
-        SC_TGLPS = STR_TO_DATE(@var6, '%m/%d/%Y %r'),
-        SC_TGLUNSC = STR_TO_DATE(@var7, '%m/%d/%Y %r')"
+        ORDER_ID = @`ORDER_ID`,
+        SC_TGLPS = STR_TO_DATE(@`SC_TGLPS`, '%m/%d/%Y %r'),
+        SLG = @`SLG`,
+        WITEL = @`WITEL`,
+        MTTI_GROUP = @`MTTI_GROUP`
+        "
       );
       $res['success'] = $query;
       $res['rows'] = $this->db->affected_rows();

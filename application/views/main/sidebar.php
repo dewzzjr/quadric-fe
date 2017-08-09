@@ -32,7 +32,7 @@
             </li>
         </ul>
       </li>
-      <?php if ( $this->session->usertype === 'admin' ) : ?>
+      <?php if ( $this->session->userdata('usertype') === 'admin' ) : ?>
       <!--li><a href="upload"><i class="fa fa-upload"></i> <span>Upload Data</span></a></li-->
       <li><a href="admin/input<?php if ($this->uri->segment(1) == 'dashboard') { echo '/'.$this->uri->segment(5).'-'.$this->uri->segment(4).'-'.$this->uri->segment(3); } ?>">
         <i class="fa fa-edit"></i> <span>Input Data Regional</span></a>

@@ -26,10 +26,21 @@ $this->load->view('main/sidebar');
       <form action="admin/upload_file" method="post" enctype="multipart/form-data" id="upload_form">
         <div class="col-sm-12">
           <div class="btn-group">
-            <input name="submit" type="submit" value="Upload" class="btn btn-danger"/>
+            <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+              Upload
+              <span class="fa fa-caret-down"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li class="help-block">&nbsp&nbsp&nbsp&nbsp Select delimiter</li>
+              <li class="divider"></li>
+              <li><input name="submit" type="submit" value="comma" class="btn btn-block btn-success"/></li>
+              <li><input name="submit" type="submit" value="tabs" class="btn btn-block btn-success"/></li>
+            </ul>
             <input id="fileupload" name="data" type="file" class="filestyle"/>
           </div>
+          <!-- /.btn-group -->
         </div>
+        <!-- /.col -->
       </form>
     </div>
     <div class="row">
